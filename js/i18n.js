@@ -2,7 +2,7 @@
 window.I18N = {
   en: {
     'meta.title': 'Gaibov — websites and apps, end to end',
-    'meta.desc': 'Independent developer Gaibov: websites, web apps, mobile apps and Telegram bots, built end to end. Portfolio and project brief.',
+    'meta.desc': 'Independent developer Gaibov: websites, web apps, mobile apps, Telegram bots and presentations. Portfolio and project brief.',
     'skip': 'Skip to content',
     'nav.label': 'Main navigation',
     'brand.sub': 'Websites & apps',
@@ -45,15 +45,21 @@ window.I18N = {
     'services.4.t': 'Bots & integrations',
     'services.4.d': 'Telegram bots for orders and support, serverless functions, automation of routine processes.',
     'services.4.go': 'Order a bot or integration',
+    'services.5.t': 'Presentations',
+    'services.5.d': 'Study, business and thesis-defence decks: structure, a consistent style, diagrams, charts and illustrations. You get the finished file and the editable source.',
+    'services.5.go': 'Order a presentation',
 
     'stack.label': 'Tools & skills', 'stack.title': 'Technologies I use',
 
     'work.label': 'Featured projects', 'work.title': 'Selected work',
     'work.hint': 'Open a project to see the details',
-    'work.badge.real': 'Real product', 'work.badge.concept': 'Concept',
+    'work.badge.real': 'Real product', 'work.badge.concept': 'Concept', 'work.badge.sample': 'Sample',
     'work.noverim.cat': 'App · Admin panel · Landing',
     'work.melty.cat': 'Website · Cake builder',
     'work.aura.cat': 'Landing page · Premium clinic',
+    'work.clinic.cat': 'Landing page · Calculator · 3D tooth',
+    'work.deck.title': 'Periods of Childhood',
+    'work.deck.cat': 'Presentation · 20 slides',
 
     'process.label': 'My process', 'process.title': 'How a project goes',
     'process.1.t': 'Brief', 'process.1.d': 'We clarify the goal, audience and budget, then fix the scope and timeline.',
@@ -88,7 +94,7 @@ window.I18N = {
     'form.title': 'Project brief',
     'form.type': 'What do you need?',
     'form.type.site': 'Website / landing', 'form.type.app': 'Web app / admin panel',
-    'form.type.mobile': 'Mobile app', 'form.type.bot': 'Bot / integration', 'form.type.other': 'Other',
+    'form.type.mobile': 'Mobile app', 'form.type.bot': 'Bot / integration', 'form.type.deck': 'Presentation', 'form.type.other': 'Other',
     'form.budget': 'Budget',
     'form.budget.1': 'up to $500', 'form.budget.2': '$500–1,500', 'form.budget.3': '$1,500–5,000', 'form.budget.4': '$5,000+', 'form.budget.0': 'Not sure',
     'form.time': 'Timeline',
@@ -108,7 +114,7 @@ window.I18N = {
     'case.noverim.status': 'Real product · preparing for Google Play release',
     'case.noverim.sub': '3D anatomy atlas, study notes and tests for medical students',
     'case.noverim.g1': 'App screens', 'case.noverim.g2': 'Landing page and promo graphics',
-    'case.noverim.a1': 'Home screen with learning progress', 'case.noverim.a2': 'Anatomy chapters and the 3D atlas entry',
+    'case.noverim.a1': 'Home screen: start of the osteology course, progress and stats', 'case.noverim.a2': 'Anatomy chapters and the 3D atlas entry',
     'case.noverim.a3': 'A study note', 'case.noverim.a4': 'A 3D body model with planes and axes',
     'case.noverim.a5': 'Tests screen', 'case.noverim.a6': 'Profile',
     'case.noverim.a7': 'Noverim landing page: hero', 'case.noverim.a8': 'Noverim landing page: app screens', 'case.noverim.a9': 'Promo graphic for Google Play',
@@ -131,7 +137,28 @@ window.I18N = {
     'case.aura.1': 'A calm, premium look: a deep-green palette and a Playfair Display + Inter type pair.',
     'case.aura.2': 'A transparent price list with filters by specialty, treatment steps, doctors, reviews and an FAQ.',
     'case.aura.3': 'A booking form, a floating call button and a mobile menu.',
-    'case.aura.4': 'A static build with no toolchain; skip link, visible focus states, responsive layout.'
+    'case.aura.4': 'A static build with no toolchain; skip link, visible focus states, responsive layout.',
+
+    'case.clinic.sub': 'A dental landing page with a cost calculator — a concept',
+    'case.clinic.a1': 'Gaibov Clinic: hero', 'case.clinic.a2': 'Gaibov Clinic: services',
+    'case.clinic.a3': 'Gaibov Clinic: cost calculator with selected services', 'case.clinic.a4': 'Gaibov Clinic: contacts and booking form',
+    'case.clinic.1': 'A restrained premium look: a light palette with deep blue and a signature 3D tooth — rendered in Three.js ahead of time, so the site ships a lightweight image.',
+    'case.clinic.2': 'A cost calculator: the selected services recalculate the price range with a smooth counter, and the total is announced to screen readers.',
+    'case.clinic.3': 'Services, specialists, reviews and a booking form with field validation (no back end in the concept).',
+    'case.clinic.4': 'React and Tailwind, Framer Motion animations that respect reduced motion, a skip link and SEO markup (Open Graph, JSON-LD).',
+
+    'case.deck.status': 'Sample · a study deck, slides in Russian',
+    'case.deck.sub': 'Paediatric propaedeutics: physical development and anthropometry',
+    'case.deck.cap': 'Slides (6 of 20)',
+    'case.deck.a1': 'Title slide', 'case.deck.a2': 'Table of the periods of childhood', 'case.deck.a3': 'Newborn period: key figures',
+    'case.deck.a4': 'Body weight: monthly gain chart and formulas', 'case.deck.a5': 'Development assessment: centile corridors', 'case.deck.a6': 'Anthropometry rules: a step-by-step checklist',
+    'case.deck.1': 'Structured from general to specific: classification of childhood periods, physical development by age, assessment of development and measurement technique.',
+    'case.deck.2': 'One consistent style across 20 slides: large type, a colour for each section and tidy cards with the key figures.',
+    'case.deck.3': 'Data turned into graphics: monthly weight gain, centile corridors, tables and step-by-step checklists.',
+    'case.deck.4': 'Illustrations and short captions instead of walls of text.',
+    'case.deck.fmt': 'Format', 'case.deck.t3': '20 slides',
+    'case.deck.note': "On the title slide the presenter's name is replaced with a neutral label.",
+    'case.deck.cta': 'Order a presentation'
   },
 
   dyn: {
