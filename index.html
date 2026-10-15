@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="meta.title">Gaibov — сайты и приложения под ключ</title>
+<meta name="description" content="Независимый разработчик Gaibov: сайты, веб-приложения, мобильные приложения и Telegram-боты под ключ. Портфолио и заявка на проект." data-i18n-attr="content:meta.desc">
+<meta name="theme-color" content="#ECEAF4">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://ga1bov.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gaibov">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:url" content="https://ga1bov.github.io/">
+<meta property="og:image" content="https://ga1bov.github.io/assets/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Gaibov: сайты и приложения под ключ">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Gaibov — сайты и приложения под ключ" data-i18n-attr="content:meta.title">
+<meta property="og:description" content="Независимый разработчик Gaibov: сайты, веб-приложения, мобильные приложения и Telegram-боты под ключ. Портфолио и заявка на проект." data-i18n-attr="content:meta.desc">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/golos-lat.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/golos-cyr.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<!-- ===== иконки (inline sprite) ===== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></symbol>
+  <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M21.5 2.5 10.5 13.5"/><path d="M21.5 2.5 14.5 21.5l-4-8-8-4z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.7 1.8 1.8.7-1.8.7L19 21l-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+  <symbol id="i-window" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M3 9.5h18"/><path d="M6.8 7h.01M9.8 7h.01"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 4.5-9 4.5-9-4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="12" rx="3.5"/><path d="M12 8V4.5M9.5 4.5h5"/><path d="M9 13.5v1.5M15 13.5v1.5"/><path d="M2 13.5v3M22 13.5v3"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.9-3.7 3.7-5.5 7-5.5s6.1 1.8 7 5.5"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.5 4 5.5 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.5-4-9s1.4-6.5 4-9z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4.2L16.6 4.2a2.1 2.1 0 0 1 3 3L8 18.8z"/><path d="m14.5 6.3 3 3"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/><path d="m14 4-4 16"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5.5c0 4.4-2.9 7.7-7 9.5-4.1-1.8-7-5.1-7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4.5h11.5l-2.3 4 2.3 4H5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+</svg>
+
+<a class="skip" href="#main" data-i18n="skip">К содержимому</a>
+
+<!-- ===== фон: мягкий шёлк ===== -->
+<div class="bg" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="silk1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".55" stop-color="#D9D2FF" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="silk2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".6" stop-color="#CFE0FF" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <linearGradient id="line1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <path id="wave" d="M-80 160C200 40 420 280 700 160S1180-10 1520 130"/>
+    </defs>
+    <path d="M1500-40C1250 120 1180 300 1000 330S700 200 520-60Z" fill="url(#silk2)"/>
+    <path d="M-100 720C200 580 380 840 700 720S1200 540 1540 660V900H-100Z" fill="url(#silk1)"/>
+    <g fill="none" stroke="url(#line1)" stroke-width="1.1" transform="translate(760 -70)">
+      <use href="#wave" opacity=".9"/><use href="#wave" y="10" opacity=".8"/><use href="#wave" y="20" opacity=".7"/><use href="#wave" y="30" opacity=".6"/>
+      <use href="#wave" y="40" opacity=".5"/><use href="#wave" y="50" opacity=".4"/><use href="#wave" y="60" opacity=".3"/><use href="#wave" y="70" opacity=".2"/>
+    </g>
+    <g fill="none" stroke="url(#line1)" stroke-width="1.1" transform="translate(-520 640)">
+      <use href="#wave" opacity=".9"/><use href="#wave" y="10" opacity=".8"/><use href="#wave" y="20" opacity=".7"/><use href="#wave" y="30" opacity=".6"/>
+      <use href="#wave" y="40" opacity=".5"/><use href="#wave" y="50" opacity=".4"/><use href="#wave" y="60" opacity=".3"/><use href="#wave" y="70" opacity=".2"/>
+    </g>
+  </svg>
+</div>
+
+<!-- ===== навигация ===== -->
+<header class="nav-wrap wrap">
+  <nav class="nav glass" id="nav" aria-label="Основная навигация" data-i18n-attr="aria-label:nav.label">
+    <a class="brand" href="#top" aria-label="Gaibov">
+      <svg class="brand__mark" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="bm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2A2850"/><stop offset="1" stop-color="#0B0B14"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#bm)"/><path d="M41.96 23.64A13 13 0 1 0 45 32L33 32" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="46" cy="21" r="3.2" fill="#A99BFF"/></svg>
+      <span class="brand__txt"><b>Gaibov</b><small data-i18n="brand.sub">Сайты и приложения</small></span>
+    </a>
+    <ul class="nav__links" id="nav-links">
+      <li><a href="#top" data-i18n="nav.home">Главная</a></li>
+      <li><a href="#about" data-i18n="nav.about">Обо мне</a></li>
+      <li><a href="#services" data-i18n="nav.services">Услуги</a></li>
+      <li><a href="#work" data-i18n="nav.work">Работы</a></li>
+      <li><a href="#process" data-i18n="nav.process">Процесс</a></li>
+      <li><a href="#faq" data-i18n="nav.faq">Вопросы</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">Контакт</a></li>
+      <li class="only-m"><a href="#contact" data-i18n="nav.cta">Обсудить проект</a></li>
+    </ul>
+    <div class="nav__right">
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn--ghost nav__cta" href="#contact"><span data-i18n="nav.cta">Обсудить проект</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+      <button type="button" class="nav__burger" id="burger" aria-expanded="false" aria-controls="nav-links" aria-label="Меню" data-i18n-attr="aria-label:nav.menu"><svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main" class="wrap">
+
+  <!-- ===== hero ===== -->
+  <section class="panel glass hero" id="top" aria-labelledby="hero-h">
+    <div class="hero__copy">
+      <span class="pill" id="avail"><i></i><span data-i18n="hero.avail">Принимаю новые проекты</span></span>
+      <span class="eyebrow" data-i18n="hero.eyebrow">Независимый разработчик</span>
+      <h1 class="hero__h1" id="hero-h"><span class="hero__title">Gaibov</span><span class="hero__sub" data-i18n-html="hero.sub">Сайты и приложения<br>под ключ</span></h1>
+      <p class="hero__lead" data-i18n="hero.lead">Проектирую, дизайню и разрабатываю цифровые продукты: от лендинга до мобильного приложения с 3D и админкой. Один исполнитель, прямая связь и понятные сроки.</p>
+      <div class="hero__cta">
+        <a class="btn btn--dark" href="#work"><span data-i18n="hero.cta1">Смотреть работы</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+        <a class="btn btn--ghost" href="#contact"><span data-i18n="hero.cta2">Оставить заявку</span><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg></a>
+      </div>
+      <div class="hero__stack">
+        <small data-i18n="hero.stack">Стек</small>
+        <ul class="wordmarks"><li>Next.js</li><li>React</li><li>TypeScript</li><li>Tailwind</li><li>Supabase</li><li>Capacitor</li></ul>
+      </div>
+    </div>
+
+    <div class="hero__visual" id="stage" data-reveal>
+      <div class="frame"></div>
+      <div class="glow"></div>
+      <div class="dev-browser">
+        <div class="dev-browser__bar"><i></i><i></i><i></i><span class="dev-browser__url" data-i18n="hero.browser">AURA Dental Studio · концепт</span></div>
+        <img src="assets/works/aura-1.webp" width="1280" height="800" alt="Скриншот сайта AURA Dental Studio" data-i18n-attr="alt:hero.browser.alt" fetchpriority="high" decoding="async">
+      </div>
+      <div class="dev-phone"><img src="assets/works/nv-3d-free-model.webp" width="540" height="960" alt="Экран приложения Noverim: 3D-атлас анатомии" data-i18n-attr="alt:hero.phone.alt" decoding="async"></div>
+      <div class="chip-card chip-card--stat glass">
+        <span class="chip-card__n">3</span>
+        <span><b data-i18n="hero.stat.t">платформы</b><small>Web · Android · Telegram</small></span>
+      </div>
+      <div class="chip-card chip-card--flow glass">
+        <b data-i18n="hero.flow.t">Под ключ</b>
+        <ol class="flow"><li data-i18n="hero.flow.1">Идея</li><li data-i18n="hero.flow.2">Дизайн</li><li data-i18n="hero.flow.3">Код</li><li data-i18n="hero.flow.4">Релиз</li></ol>
+      </div>
+      <div class="orb-mini glass" aria-hidden="true"><svg class="ico"><use href="#i-sparkle"/></svg></div>
+    </div>
+  </section>
+
+  <!-- ===== about ===== -->
+  <section class="panel glass about" id="about" aria-labelledby="about-h">
+    <div data-reveal>
+      <span class="label" data-i18n="about.label">Обо мне</span>
+      <h2 class="h2" id="about-h" data-i18n-html="about.title">Продумываю как продукт,<br>собираю как инженер</h2>
+      <ul class="stats card">
+        <li><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg><b>5</b><span data-i18n="about.s1">проектов в портфолио</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg><b>3</b><span data-i18n="about.s2">платформы: Web, Android, Telegram</span></li>
+        <li><svg class="ico" aria-hidden="true"><use href="#i-user"/></svg><b>1</b><span data-i18n="about.s3">исполнитель, без посредников</span></li>
+      </ul>
+    </div>
+    <div class="about__r" data-reveal style="--d:120ms">
+      <p data-i18n="about.p1">Я делаю сайты, веб-сервисы и мобильные приложения в одиночку: от первого эскиза до публикации и поддержки. Нет цепочки менеджеров: вы общаетесь напрямую с тем, кто пишет код, поэтому решения принимаются быстро, а договорённости не теряются.</p>
+      <p data-i18n="about.p2">Для меня важны скорость загрузки, доступность интерфейса и аккуратная работа с данными. Проекты ниже — не картинки из Figma, а работающий код.</p>
+      <a class="btn btn--ghost" href="#process"><span data-i18n="about.cta">Как я работаю</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+    </div>
+  </section>
+
+  <!-- ===== services ===== -->
+  <section class="panel glass services" id="services" aria-labelledby="services-h">
+    <div class="orb" aria-hidden="true"></div>
+    <div class="sec-head" data-reveal>
+      <div><span class="label" data-i18n="services.label">Чем занимаюсь</span><h2 class="h2" id="services-h" data-i18n="services.title">Услуги</h2></div>
+    </div>
+    <div class="services__grid">
+      <article class="card svc svc--y" data-reveal>
+        <span class="svc__ic"><svg class="ico" aria-hidden="true"><use href="#i-window"/></svg></span>
+        <h3 data-i18n="services.1.t">Сайты и лендинги</h3>
+        <p data-i18n="services.1.d">Корпоративные сайты, лендинги и портфолио: быстрые, адаптивные, с аккуратной анимацией и базовым SEO.</p>
+        <button type="button" class="round" data-pick="site" aria-label="Заказать: сайт или лендинг" data-i18n-attr="aria-label:services.1.go"><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></button>
+      </article>
+      <article class="card svc svc--p" data-reveal style="--d:80ms">
+        <span class="svc__ic"><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg></span>
+        <h3 data-i18n="services.2.t">Веб-приложения и админки</h3>
+        <p data-i18n="services.2.d">Личные кабинеты, панели управления контентом и заказами, интеграции с базами данных и сторонними API.</p>
+        <button type="button" class="round" data-pick="app" aria-label="Заказать: веб-приложение или админку" data-i18n-attr="aria-label:services.2.go"><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></button>
+      </article>
+      <article class="card svc svc--b" data-reveal style="--d:160ms">
+        <span class="svc__ic"><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg></span>
+        <h3 data-i18n="services.3.t">Мобильные приложения</h3>
+        <p data-i18n="services.3.d">Android-приложения на веб-технологиях: офлайн-режим, вход через Google и Telegram, подготовка к публикации в Google Play.</p>
+        <button type="button" class="round" data-pick="mobile" aria-label="Заказать: мобильное приложение" data-i18n-attr="aria-label:services.3.go"><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></button>
+      </article>
+      <article class="card svc svc--t" data-reveal style="--d:240ms">
+        <span class="svc__ic"><svg class="ico" aria-hidden="true"><use href="#i-bot"/></svg></span>
+        <h3 data-i18n="services.4.t">Боты и интеграции</h3>
+        <p data-i18n="services.4.d">Telegram-боты для заказов и поддержки, серверные функции, автоматизация рутинных процессов.</p>
+        <button type="button" class="round" data-pick="bot" aria-label="Заказать: бота или интеграцию" data-i18n-attr="aria-label:services.4.go"><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== stack ===== -->
+  <section class="panel glass stack" id="stack" aria-labelledby="stack-h">
+    <div class="sec-head" data-reveal>
+      <div><span class="label" data-i18n="stack.label">Инструменты</span><h2 class="h2" id="stack-h" data-i18n="stack.title">Технологии, на которых строю</h2></div>
+    </div>
+    <ul class="stack__grid">
+      <li class="card tile" data-reveal style="--g:linear-gradient(145deg,#2c2c36,#000);--c:rgba(0,0,0,.5)"><span class="tile__g">N</span>Next.js</li>
+      <li class="card tile" data-reveal style="--d:50ms;--g:linear-gradient(145deg,#56D8F8,#1C9BD6);--c:rgba(28,155,214,.6)"><span class="tile__g"><svg viewBox="-12 -12 24 24" fill="none" stroke="#fff" stroke-width="1.25" aria-hidden="true"><ellipse rx="10" ry="4"/><ellipse rx="10" ry="4" transform="rotate(60)"/><ellipse rx="10" ry="4" transform="rotate(120)"/><circle r="1.9" fill="#fff" stroke="none"/></svg></span>React</li>
+      <li class="card tile" data-reveal style="--d:100ms;--g:linear-gradient(145deg,#3B7FD4,#1F56A8);--c:rgba(31,86,168,.6)"><span class="tile__g">TS</span>TypeScript</li>
+      <li class="card tile" data-reveal style="--d:150ms;--g:linear-gradient(145deg,#3FC6F2,#0EA0C9);--c:rgba(14,160,201,.6)"><span class="tile__g"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z"/></svg></span>Tailwind CSS</li>
+      <li class="card tile" data-reveal style="--d:200ms;--g:linear-gradient(145deg,#3DDBA0,#0E9F6E);--c:rgba(14,159,110,.6)"><span class="tile__g"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M21.362 9.354H12V.396a.396.396 0 0 0-.716-.233L2.203 12.424l-.401.562a1.04 1.04 0 0 0 .836 1.659H12V21.6a.396.396 0 0 0 .716.233l9.081-12.261.401-.562a1.04 1.04 0 0 0-.836-1.656z"/></svg></span>Supabase</li>
+      <li class="card tile" data-reveal style="--d:250ms;--g:linear-gradient(145deg,#6C97FF,#3B5BDB);--c:rgba(59,91,219,.6)"><span class="tile__g"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9.5 5v14M14.5 5v14M3 12h6.5M14.5 12H21"/></svg></span>Capacitor</li>
+      <li class="card tile" data-reveal style="--d:300ms;--g:linear-gradient(145deg,#4d4d5c,#16161d);--c:rgba(22,22,29,.55)"><span class="tile__g"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 4.5 19.5h15z"/><path d="M12 3.5 8.2 19.5M12 3.5l3.8 16M6.7 13h10.6" stroke-width="1.2"/></svg></span>Three.js</li>
+      <li class="card tile" data-reveal style="--d:350ms;--g:linear-gradient(145deg,#FDB45A,#F2711C);--c:rgba(242,113,28,.55)"><span class="tile__g"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M7.5 18.5a4 4 0 0 1-.4-7.98A5.5 5.5 0 0 1 17.6 9.7a4.4 4.4 0 0 1-.1 8.8z"/></svg></span>Cloudflare</li>
+    </ul>
+  </section>
+
+  <!-- ===== work ===== -->
+  <section class="panel glass work" id="work" aria-labelledby="work-h">
+    <div class="sec-head" data-reveal>
+      <div><span class="label" data-i18n="work.label">Избранные работы</span><h2 class="h2" id="work-h" data-i18n="work.title">Работы</h2></div>
+      <p class="hint" data-i18n="work.hint">Откройте проект, чтобы увидеть подробности</p>
+    </div>
+    <div class="work__grid">
+      <button type="button" class="card work-card" data-case="noverim" aria-haspopup="dialog" data-reveal>
+        <span class="thumb thumb--nv" aria-hidden="true">
+          <span class="ph ph--l"><img src="assets/works/nv-home-progress.webp" width="540" height="960" alt="" loading="lazy" decoding="async"></span>
+          <span class="ph ph--r"><img src="assets/works/nv-3d-free-model.webp" width="540" height="960" alt="" loading="lazy" decoding="async"></span>
+          <span class="tag glass" data-i18n="work.badge.real">Реальный продукт</span>
+        </span>
+        <span class="work-card__meta">
+          <span><span class="work-card__title">Noverim</span><span class="work-card__cat" data-i18n="work.noverim.cat">Приложение · Админка · Лендинг</span></span>
+          <span class="round" aria-hidden="true"><svg class="ico"><use href="#i-arrow-ur"/></svg></span>
+        </span>
+      </button>
+      <button type="button" class="card work-card" data-case="melty" aria-haspopup="dialog" data-reveal style="--d:100ms">
+        <span class="thumb thumb--mb" aria-hidden="true">
+          <span class="shot"><span class="shot__bar"><i></i><i></i><i></i></span><img src="assets/works/melty-1.webp" width="1280" height="800" alt="" loading="lazy" decoding="async"></span>
+          <span class="tag glass" data-i18n="work.badge.concept">Концепт</span>
+        </span>
+        <span class="work-card__meta">
+          <span><span class="work-card__title">Melty Bakery</span><span class="work-card__cat" data-i18n="work.melty.cat">Сайт · Конструктор торта</span></span>
+          <span class="round" aria-hidden="true"><svg class="ico"><use href="#i-arrow-ur"/></svg></span>
+        </span>
+      </button>
+      <button type="button" class="card work-card" data-case="aura" aria-haspopup="dialog" data-reveal style="--d:200ms">
+        <span class="thumb thumb--au" aria-hidden="true">
+          <span class="shot"><span class="shot__bar"><i></i><i></i><i></i></span><img src="assets/works/aura-1.webp" width="1280" height="800" alt="" loading="lazy" decoding="async"></span>
+          <span class="tag glass" data-i18n="work.badge.concept">Концепт</span>
+        </span>
+        <span class="work-card__meta">
+          <span><span class="work-card__title">AURA Dental Studio</span><span class="work-card__cat" data-i18n="work.aura.cat">Лендинг · Премиум-клиника</span></span>
+          <span class="round" aria-hidden="true"><svg class="ico"><use href="#i-arrow-ur"/></svg></span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== process ===== -->
+  <section class="panel glass process" id="process" aria-labelledby="process-h">
+    <div class="sec-head" data-reveal>
+      <div><span class="label" data-i18n="process.label">Как я работаю</span><h2 class="h2" id="process-h" data-i18n="process.title">Процесс работы</h2></div>
+    </div>
+    <ol class="steps">
+      <li class="card step" data-reveal><div class="step__top"><span class="step__n">01</span><span class="step__ic"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg></span></div><h3 data-i18n="process.1.t">Бриф</h3><p data-i18n="process.1.d">Разбираем задачу, аудиторию и бюджет. Фиксируем объём и сроки.</p></li>
+      <li class="card step" data-reveal style="--d:80ms"><div class="step__top"><span class="step__n">02</span><span class="step__ic"><svg class="ico" aria-hidden="true"><use href="#i-pen"/></svg></span></div><h3 data-i18n="process.2.t">Концепт</h3><p data-i18n="process.2.d">Структура, стиль и прототип ключевых экранов — до начала разработки.</p></li>
+      <li class="card step" data-reveal style="--d:160ms"><div class="step__top"><span class="step__n">03</span><span class="step__ic"><svg class="ico" aria-hidden="true"><use href="#i-code"/></svg></span></div><h3 data-i18n="process.3.t">Разработка</h3><p data-i18n="process.3.d">Пишу код итерациями и показываю промежуточные версии на рабочем стенде.</p></li>
+      <li class="card step" data-reveal style="--d:240ms"><div class="step__top"><span class="step__n">04</span><span class="step__ic"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></span></div><h3 data-i18n="process.4.t">Проверка</h3><p data-i18n="process.4.d">Адаптивность, доступность, скорость, сценарии пользователя. Исправляю найденное.</p></li>
+      <li class="card step" data-reveal style="--d:320ms"><div class="step__top"><span class="step__n">05</span><span class="step__ic"><svg class="ico" aria-hidden="true"><use href="#i-flag"/></svg></span></div><h3 data-i18n="process.5.t">Релиз и поддержка</h3><p data-i18n="process.5.d">Публикация, передача исходников и доступов, сопровождение после запуска.</p></li>
+    </ol>
+  </section>
+
+  <!-- ===== faq ===== -->
+  <section class="panel glass faq" id="faq" aria-labelledby="faq-h">
+    <div data-reveal>
+      <span class="label" data-i18n="faq.label">Вопросы</span>
+      <h2 class="h2" id="faq-h" data-i18n="faq.title">Частые вопросы</h2>
+      <p class="faq__lead" data-i18n="faq.lead">Не нашли ответ? Напишите — отвечу лично.</p>
+      <a class="btn btn--dark" href="#contact"><span data-i18n="faq.cta">Написать мне</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+    </div>
+    <div data-reveal style="--d:100ms">
+      <details class="card qa"><summary><span data-i18n="faq.1.q">Сколько стоит проект?</span><span class="pm"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></span></summary><p data-i18n="faq.1.a">Зависит от объёма и сложности: лендинг и мобильное приложение — разные порядки цен. Точную стоимость называю после короткого брифа. В форме ниже можно указать вилку бюджета — так я сразу предложу подходящий формат работы.</p></details>
+      <details class="card qa"><summary><span data-i18n="faq.2.q">Сколько времени это займёт?</span><span class="pm"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></span></summary><p data-i18n="faq.2.a">Ориентиры: лендинг — 1–2 недели, сайт или веб-сервис — 3–6 недель, мобильное приложение — от двух месяцев. Точные сроки фиксирую после брифа.</p></details>
+      <details class="card qa"><summary><span data-i18n="faq.3.q">Что я получу в итоге?</span><span class="pm"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></span></summary><p data-i18n="faq.3.a">Работающий продукт, исходный код, доступы к хостингу и сервисам и короткую инструкцию, как всем этим пользоваться. Вы владеете результатом полностью.</p></details>
+      <details class="card qa"><summary><span data-i18n="faq.4.q">Как мы будем общаться?</span><span class="pm"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg></span></summary><p data-i18n="faq.4.a">Работаю удалённо. Основной канал — Telegram: там же согласуем задачи и показываю промежуточные версии.</p></details>
+    </div>
+  </section>
+
+  <!-- ===== contact ===== -->
+  <section class="panel glass panel--clip contact" id="contact" aria-labelledby="contact-h">
+    <div class="orb" aria-hidden="true"></div>
+    <div data-reveal style="position:relative">
+      <span class="label" data-i18n="contact.label">Контакт</span>
+      <h2 class="h2" id="contact-h" data-i18n-html="contact.title">Есть проект?<br>Давайте сделаем <span class="nw">что-то</span> выдающееся.</h2>
+      <p class="contact__lead" data-i18n="contact.lead">Опишите задачу в брифе — я отвечу в Telegram и предложу формат, сроки и стоимость.</p>
+      <ul class="contact__list">
+        <li class="contact__item" id="tg-row" hidden><span class="contact__ic"><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg></span><span>Telegram<br><a id="tg-link" href="#contact" target="_blank" rel="noopener noreferrer"></a></span></li>
+        <li class="contact__item" id="ch-row" hidden><span class="contact__ic"><svg class="ico" aria-hidden="true"><use href="#i-megaphone"/></svg></span><span><span data-i18n="contact.channel">Канал с работами</span><br><a id="ch-link" href="#contact" target="_blank" rel="noopener noreferrer"></a></span></li>
+        <li class="contact__item"><span class="contact__ic"><svg class="ico" aria-hidden="true"><use href="#i-globe"/></svg></span><span data-i18n="contact.remote">Работаю удалённо, по всему миру</span></li>
+        <li class="contact__item"><span class="contact__ic"><svg class="ico" aria-hidden="true"><use href="#i-clock"/></svg></span><span data-i18n="contact.reply">Отвечаю, как правило, в течение суток</span></li>
+      </ul>
+      <div class="card next">
+        <h3 data-i18n="contact.next.t">Что будет дальше</h3>
+        <ol>
+          <li data-i18n="contact.next.1">Вы отправляете бриф — хватит и пары предложений.</li>
+          <li data-i18n="contact.next.2">Я отвечаю в Telegram и задаю уточняющие вопросы.</li>
+          <li data-i18n="contact.next.3">Согласуем объём, сроки и стоимость — и начинаем работу.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card brief" data-reveal style="--d:120ms;position:relative">
+      <form id="brief" novalidate>
+        <h3 data-i18n="form.title">Бриф на проект</h3>
+
+        <fieldset class="field">
+          <legend data-i18n="form.type">Что нужно сделать?</legend>
+          <div class="chips" aria-describedby="err-type">
+            <label class="chip"><input type="radio" name="type" value="site"><span data-i18n="form.type.site">Сайт / лендинг</span></label>
+            <label class="chip"><input type="radio" name="type" value="app"><span data-i18n="form.type.app">Веб-приложение / админка</span></label>
+            <label class="chip"><input type="radio" name="type" value="mobile"><span data-i18n="form.type.mobile">Мобильное приложение</span></label>
+            <label class="chip"><input type="radio" name="type" value="bot"><span data-i18n="form.type.bot">Бот / интеграция</span></label>
+            <label class="chip"><input type="radio" name="type" value="other"><span data-i18n="form.type.other">Другое</span></label>
+          </div>
+          <p class="err" id="err-type" role="alert"></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend data-i18n="form.budget">Бюджет</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="budget" value="b1"><span data-i18n="form.budget.1">до $500</span></label>
+            <label class="chip"><input type="radio" name="budget" value="b2"><span data-i18n="form.budget.2">$500–1 500</span></label>
+            <label class="chip"><input type="radio" name="budget" value="b3"><span data-i18n="form.budget.3">$1 500–5 000</span></label>
+            <label class="chip"><input type="radio" name="budget" value="b4"><span data-i18n="form.budget.4">от $5 000</span></label>
+            <label class="chip"><input type="radio" name="budget" value="b0" checked><span data-i18n="form.budget.0">Не знаю</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend data-i18n="form.time">Сроки</legend>
+          <div class="chips">
+            <label class="chip"><input type="radio" name="time" value="t1"><span data-i18n="form.time.1">Срочно, до 2 недель</span></label>
+            <label class="chip"><input type="radio" name="time" value="t2"><span data-i18n="form.time.2">1–2 месяца</span></label>
+            <label class="chip"><input type="radio" name="time" value="t3"><span data-i18n="form.time.3">Без спешки</span></label>
+            <label class="chip"><input type="radio" name="time" value="t0" checked><span data-i18n="form.time.0">Не знаю</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="f-msg" data-i18n="form.msg">О проекте</label>
+          <textarea class="input" id="f-msg" name="message" rows="4" maxlength="1200" placeholder="Что нужно сделать, для кого, есть ли примеры и сроки…" data-i18n-attr="placeholder:form.msg.ph" aria-describedby="err-msg"></textarea>
+          <p class="err" id="err-msg" role="alert"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-contact" data-dyn="lbl.contact.opt">Как с вами связаться (необязательно)</label>
+          <input class="input" id="f-contact" name="contact" type="text" maxlength="120" autocomplete="off" placeholder="@username или e-mail" data-i18n-attr="placeholder:form.contact.ph" aria-describedby="err-contact">
+          <p class="err" id="err-contact" role="alert"></p>
+          <input class="hp" type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </div>
+
+        <div class="brief__foot">
+          <button type="submit" class="btn btn--dark"><span data-i18n="form.send">Отправить заявку</span><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg></button>
+          <p class="brief__note" id="brief-note" data-dyn="note.tg">Заявка откроется в Telegram с готовым текстом — останется нажать «Отправить».</p>
+        </div>
+      </form>
+
+      <div class="sent" id="sent" hidden aria-live="polite">
+        <span class="sent__ic"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span>
+        <h3 id="sent-t"></h3>
+        <p id="sent-p"></p>
+        <textarea class="input" id="sent-msg" readonly rows="6" aria-label="Brief"></textarea>
+        <div class="sent__act">
+          <a class="btn btn--dark" id="sent-open" href="#contact" target="_blank" rel="noopener noreferrer" hidden><span data-dyn="btn.open">Открыть Telegram</span><svg class="ico" aria-hidden="true"><use href="#i-send"/></svg></a>
+          <button type="button" class="btn btn--ghost" id="sent-copy"><svg class="ico" aria-hidden="true"><use href="#i-copy"/></svg><span data-dyn="btn.copy">Скопировать</span></button>
+          <button type="button" class="btn btn--ghost" id="sent-edit"><span data-dyn="btn.edit">Изменить заявку</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div class="foot glass">
+    <span>© <span id="year">2026</span> Gaibov · <span data-i18n="footer.made">Сделано вручную на HTML, CSS и JS</span></span>
+    <a href="#top"><span data-i18n="footer.top">Наверх</span> ↑</a>
+  </div>
+</footer>
+
+<!-- ===== кейсы ===== -->
+<dialog class="case" id="case-noverim" aria-labelledby="case-noverim-t">
+  <div class="case__box">
+    <header class="case__head">
+      <div>
+        <span class="badge" data-i18n="case.noverim.status">Реальный продукт · готовится к публикации в Google Play</span>
+        <h2 id="case-noverim-t">Noverim</h2>
+        <p class="case__sub" data-i18n="case.noverim.sub">3D-атлас анатомии, конспекты и тесты для студентов-медиков</p>
+      </div>
+      <button type="button" class="round" data-close aria-label="Закрыть" data-i18n-attr="aria-label:case.close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="case__body">
+      <div class="case__media">
+        <p class="case__cap" data-i18n="case.noverim.g1">Экраны приложения</p>
+        <div class="strip strip--phones" tabindex="0" role="region" aria-label="Экраны приложения" data-i18n-attr="aria-label:case.noverim.g1">
+          <img src="assets/works/nv-home-progress.webp" width="540" height="960" alt="Главный экран с прогрессом обучения" data-i18n-attr="alt:case.noverim.a1" loading="lazy" decoding="async">
+          <img src="assets/works/nv-subjects-chapters.webp" width="540" height="960" alt="Главы анатомии и вход в 3D-атлас" data-i18n-attr="alt:case.noverim.a2" loading="lazy" decoding="async">
+          <img src="assets/works/nv-note.webp" width="540" height="960" alt="Конспект по теме" data-i18n-attr="alt:case.noverim.a3" loading="lazy" decoding="async">
+          <img src="assets/works/nv-3d-free-model.webp" width="540" height="960" alt="3D-модель тела с плоскостями и осями" data-i18n-attr="alt:case.noverim.a4" loading="lazy" decoding="async">
+          <img src="assets/works/nv-my-tests.webp" width="540" height="960" alt="Экран тестов" data-i18n-attr="alt:case.noverim.a5" loading="lazy" decoding="async">
+          <img src="assets/works/nv-profile.webp" width="540" height="960" alt="Профиль" data-i18n-attr="alt:case.noverim.a6" loading="lazy" decoding="async">
+        </div>
+        <p class="case__cap" data-i18n="case.noverim.g2">Лендинг и промо-графика</p>
+        <div class="strip strip--wide" tabindex="0" role="region" aria-label="Лендинг и промо-графика" data-i18n-attr="aria-label:case.noverim.g2">
+          <img src="assets/works/nv-landing-1.webp" width="1280" height="800" alt="Лендинг Noverim: главный экран" data-i18n-attr="alt:case.noverim.a7" loading="lazy" decoding="async">
+          <img src="assets/works/nv-landing-2.webp" width="1280" height="800" alt="Лендинг Noverim: экраны приложения" data-i18n-attr="alt:case.noverim.a8" loading="lazy" decoding="async">
+          <img src="assets/works/nv-feature.webp" width="1024" height="500" alt="Промо-графика для Google Play" data-i18n-attr="alt:case.noverim.a9" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="case__info">
+        <h3 data-i18n="case.did">Что сделано</h3>
+        <ul class="ticks">
+          <li data-i18n="case.noverim.1">Android-приложение (Next.js + Capacitor): конспекты по 9 главам анатомии (180+ тем), тесты, прогресс обучения, офлайн-режим.</li>
+          <li data-i18n="case.noverim.2">3D-атлас на Three.js: модели подгружаются по запросу и защищены подписанными ссылками (Cloudflare Worker + R2).</li>
+          <li data-i18n="case.noverim.3">Бэкенд на Supabase: база данных, вход через Google и Telegram, серверные функции, ежедневные зашифрованные резервные копии.</li>
+          <li data-i18n="case.noverim.4">Проверка устных ответов с помощью ИИ и Telegram-бот для заказов и поддержки.</li>
+          <li data-i18n="case.noverim.5">Веб-админка (Next.js + TipTap) для контента и заказов и лендинг (Vite + React).</li>
+        </ul>
+        <h3 data-i18n="case.stack">Стек</h3>
+        <ul class="tags"><li>Next.js</li><li>React</li><li>TypeScript</li><li>Tailwind</li><li>Capacitor</li><li>Three.js</li><li>Supabase</li><li>Cloudflare Workers</li><li>TipTap</li><li>Vite</li></ul>
+        <p class="case__note" data-i18n="case.noverim.note">Проект закрытый: подробности и демонстрация — по запросу.</p>
+        <div class="case__actions"><a class="btn btn--dark" href="#contact" data-close><span data-i18n="case.cta">Хочу похожий проект</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-r"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="case" id="case-melty" aria-labelledby="case-melty-t">
+  <div class="case__box">
+    <header class="case__head">
+      <div>
+        <span class="badge" data-i18n="case.concept">Концепт · бренд, адреса, цены и отзывы вымышлены</span>
+        <h2 id="case-melty-t">Melty Bakery</h2>
+        <p class="case__sub" data-i18n="case.melty.sub">Сайт кондитерской — концепт для портфолио</p>
+      </div>
+      <button type="button" class="round" data-close aria-label="Закрыть" data-i18n-attr="aria-label:case.close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="case__body">
+      <div class="case__media">
+        <p class="case__cap" data-i18n="case.gallery">Галерея</p>
+        <div class="strip strip--wide" tabindex="0" role="region" aria-label="Галерея" data-i18n-attr="aria-label:case.gallery">
+          <img src="assets/works/melty-1.webp" width="1280" height="800" alt="Melty Bakery: главный экран" data-i18n-attr="alt:case.melty.a1" loading="lazy" decoding="async">
+          <img src="assets/works/melty-2.webp" width="1280" height="800" alt="Melty Bakery: категории" data-i18n-attr="alt:case.melty.a2" loading="lazy" decoding="async">
+          <img src="assets/works/melty-3.webp" width="1280" height="800" alt="Melty Bakery: каталог десертов" data-i18n-attr="alt:case.melty.a3" loading="lazy" decoding="async">
+          <img src="assets/works/melty-4.webp" width="1280" height="800" alt="Melty Bakery: хиты и новинки" data-i18n-attr="alt:case.melty.a4" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="case__info">
+        <h3 data-i18n="case.did">Что сделано</h3>
+        <ul class="ticks">
+          <li data-i18n="case.melty.1">Идея «залитой глазури»: выбранный цвет глазури перекрашивает весь сайт (5 тем), а капли становятся разделителями секций.</li>
+          <li data-i18n="case.melty.2">Конструктор торта на SVG: форма, глазурь и декор собираются в реальном времени.</li>
+          <li data-i18n="case.melty.3">Каталог, корзина и расчёт доставки — демо-сценарий заказа.</li>
+          <li data-i18n="case.melty.4">Статика без зависимостей и сборки (HTML, CSS, JS), адаптив от 320 до 1440 px, проверка контраста во всех темах.</li>
+        </ul>
+        <h3 data-i18n="case.stack">Стек</h3>
+        <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>SVG</li></ul>
+        <div class="case__actions">
+          <a class="btn btn--dark" href="https://ga1bov.github.io/melty-bakery/" target="_blank" rel="noopener noreferrer"><span data-i18n="case.demo">Открыть демо</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-ur"/></svg></a>
+          <a class="btn btn--ghost" href="#contact" data-close><span data-i18n="case.cta">Хочу похожий проект</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="case" id="case-aura" aria-labelledby="case-aura-t">
+  <div class="case__box">
+    <header class="case__head">
+      <div>
+        <span class="badge" data-i18n="case.concept">Концепт · бренд, адреса, цены и отзывы вымышлены</span>
+        <h2 id="case-aura-t">AURA Dental Studio</h2>
+        <p class="case__sub" data-i18n="case.aura.sub">Лендинг стоматологической клиники — концепт</p>
+      </div>
+      <button type="button" class="round" data-close aria-label="Закрыть" data-i18n-attr="aria-label:case.close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="case__body">
+      <div class="case__media">
+        <p class="case__cap" data-i18n="case.gallery">Галерея</p>
+        <div class="strip strip--wide" tabindex="0" role="region" aria-label="Галерея" data-i18n-attr="aria-label:case.gallery">
+          <img src="assets/works/aura-1.webp" width="1280" height="800" alt="AURA Dental Studio: главный экран" data-i18n-attr="alt:case.aura.a1" loading="lazy" decoding="async">
+          <img src="assets/works/aura-2.webp" width="1280" height="800" alt="AURA Dental Studio: преимущества" data-i18n-attr="alt:case.aura.a2" loading="lazy" decoding="async">
+          <img src="assets/works/aura-3.webp" width="1280" height="800" alt="AURA Dental Studio: прайс с фильтрами" data-i18n-attr="alt:case.aura.a3" loading="lazy" decoding="async">
+          <img src="assets/works/aura-4.webp" width="1280" height="800" alt="AURA Dental Studio: этапы лечения" data-i18n-attr="alt:case.aura.a4" loading="lazy" decoding="async">
+        </div>
+      </div>
+      <div class="case__info">
+        <h3 data-i18n="case.did">Что сделано</h3>
+        <ul class="ticks">
+          <li data-i18n="case.aura.1">Спокойная премиальная подача: палитра на основе глубокого зелёного, шрифтовая пара Playfair Display + Inter.</li>
+          <li data-i18n="case.aura.2">Прозрачный прайс с фильтрами по направлениям, этапы лечения, врачи, отзывы и FAQ.</li>
+          <li data-i18n="case.aura.3">Форма записи, плавающая кнопка звонка и мобильное меню.</li>
+          <li data-i18n="case.aura.4">Статика без сборки; ссылка «к содержимому», видимый фокус, адаптивная вёрстка.</li>
+        </ul>
+        <h3 data-i18n="case.stack">Стек</h3>
+        <ul class="tags"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+        <div class="case__actions"><a class="btn btn--dark" href="#contact" data-close><span data-i18n="case.cta">Хочу похожий проект</span><svg class="ico" aria-hidden="true"><use href="#i-arrow-r"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script src="js/config.js"></script>
+<script src="js/i18n.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>
