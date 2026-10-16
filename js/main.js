@@ -41,6 +41,7 @@
     $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
     if (persist) { try { localStorage.setItem('gb-lang', lang); } catch (e) { /* private mode */ } }
     splitHero(intro);
+    rail = null; // высота карточек процесса зависит от языка
     renderSent();
     clearErrors();
   }
@@ -98,20 +99,103 @@
     const y = window.scrollY; const max = root.scrollHeight - innerHeight;
     root.classList.toggle('is-scrolled', y > 16);
     bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ')';
+    drawSteps();
   }
   const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScrollFrame); } };
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll);
-  onScrollFrame();
 
-  /* ---------- появление при скролле ---------- */
+  /* ---------- появление при скролле: каскад внутри одной «волны» (что вошло в кадр вместе — появляется по очереди) ---------- */
   if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((es, o) => es.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add('is-in'); o.unobserve(e.target); }
-    }), { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    const io = new IntersectionObserver((es, o) => {
+      let n = 0;
+      es.filter((e) => e.isIntersecting)
+        .sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top) || (a.boundingClientRect.left - b.boundingClientRect.left))
+        .forEach((e) => {
+          const el = e.target; const d = Math.min(n++, 6) * 70;
+          el.style.setProperty('--d', d + 'ms'); el.classList.add('is-in'); o.unobserve(el);
+          setTimeout(() => el.classList.add('is-done'), d + 800); // дальше элемент живёт со своими переходами
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
     $$('[data-reveal]').forEach((el) => io.observe(el));
   } else {
-    $$('[data-reveal]').forEach((el) => el.classList.add('is-in'));
+    $$('[data-reveal]').forEach((el) => el.classList.add('is-in', 'is-done'));
+  }
+
+  /* ---------- «Обо мне»: счётчики 0 → N (числа берутся из разметки) ---------- */
+  const nums = $$('.stats b');
+  if (nums.length && !reduce && 'IntersectionObserver' in window) {
+    const vals = nums.map((b) => parseInt(b.textContent, 10) || 0);
+    new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting) return;
+      o.disconnect();
+      const t0 = performance.now();
+      const tick = (t) => {
+        let busy = false;
+        nums.forEach((b, i) => {
+          const k = Math.max(0, Math.min(1, (t - t0 - i * 160) / 1100));
+          b.textContent = String(Math.round(vals[i] * (1 - Math.pow(1 - k, 3))));
+          if (k < 1) busy = true;
+        });
+        if (busy) requestAnimationFrame(tick);
+      };
+      nums.forEach((b) => { b.textContent = '0'; });
+      requestAnimationFrame(tick);
+    }, { threshold: 0.5 }).observe($('.stats'));
+  }
+
+  /* ---------- процесс: линия дорисовывается при прокрутке, точки загораются ---------- */
+  const steps = $('.steps'); const stepEls = $$('.step', steps);
+  let rail = null;
+  function measureSteps() {
+    const last = stepEls[stepEls.length - 1];
+    const vertical = stepEls[1].offsetTop > stepEls[0].offsetTop; // одна колонка
+    if (vertical) {
+      steps.style.setProperty('--rail-e', (last.offsetHeight - 30) + 'px');
+      const y0 = stepEls[0].offsetTop; const len = (last.offsetTop - y0) || 1;
+      rail = { vertical, top: y0 + 30, len, fr: stepEls.map((s) => (s.offsetTop - y0) / len) };
+    } else rail = { vertical, fr: stepEls.map((s, i) => i / (stepEls.length - 1)) };
+  }
+  function drawSteps() {
+    if (!rail) measureSteps();
+    const r = steps.getBoundingClientRect(); const vh = innerHeight;
+    if (r.top > vh || r.bottom < 0) return;
+    let p = reduce ? 1 : rail.vertical ? (vh * 0.62 - (r.top + rail.top)) / rail.len : (vh * 0.9 - r.top) / (vh * 0.45);
+    p = Math.max(0, Math.min(1, p));
+    steps.style.setProperty('--p', p.toFixed(4));
+    stepEls.forEach((s, i) => s.classList.toggle('is-on', p > 0 && p >= rail.fr[i] - 0.002));
+  }
+  addEventListener('resize', () => { rail = null; });
+
+  /* ---------- плавная прокрутка колесом: мягкая инерция (только мышь/тачпад, без reduced-motion) ---------- */
+  if (fine && !reduce) {
+    let y = 0, target = 0, raf = 0, last = 0, mine = -1;
+    const maxY = () => root.scrollHeight - innerHeight;
+    // колесо внутри прокручиваемого блока (textarea, лента кадров) отдаём ему
+    const inner = (el, dy) => {
+      for (; el && el !== document.body && el !== root; el = el.parentElement) {
+        if (el.scrollHeight > el.clientHeight + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowY)
+          && (dy < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1)) return true;
+      }
+      return false;
+    };
+    const step = (t) => {
+      const k = 1 - Math.pow(1 - 0.12, Math.max(1, t - last) / 16.7); last = t;
+      y += (target - y) * k;
+      if (Math.abs(target - y) < 0.5) y = target;
+      mine = y; window.scrollTo({ top: y, behavior: 'instant' });
+      raf = y === target ? 0 : requestAnimationFrame(step);
+    };
+    addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.defaultPrevented || root.style.overflow === 'hidden' || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? innerHeight : 1);
+      if (inner(e.target, dy)) return;
+      e.preventDefault();
+      if (!raf) { y = window.scrollY; target = y; last = performance.now(); raf = requestAnimationFrame(step); }
+      target = Math.max(0, Math.min(maxY(), target + dy));
+    }, { passive: false });
+    // клавиатура, полоса прокрутки, якорь — кто-то другой двигает страницу: отдаём управление
+    addEventListener('scroll', () => { if (raf && Math.abs(window.scrollY - mine) > 3) { cancelAnimationFrame(raf); raf = 0; } }, { passive: true });
   }
 
   /* ---------- hero: 3D-наклон сцены за курсором (плавный догон, только transform) ---------- */
@@ -272,4 +356,5 @@
   $('#year').textContent = new Date().getFullYear();
   let saved = ''; try { saved = localStorage.getItem('gb-lang') || ''; } catch (e) { /* private mode */ }
   setLang((new URLSearchParams(location.search).get('lang') || saved) === 'en' ? 'en' : 'ru', false, true);
+  onScrollFrame();
 })();

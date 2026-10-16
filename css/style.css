@@ -175,7 +175,7 @@ p{text-wrap:pretty}
 .stats li{display:flex;flex-direction:column;gap:8px;padding:0 18px}
 .stats li+li{border-left:1px solid var(--line)}
 .stats .ico{color:var(--acc-ink)}
-.stats b{font-size:34px;line-height:1;letter-spacing:-.04em;font-weight:700}
+.stats b{font-size:34px;line-height:1;letter-spacing:-.04em;font-weight:700;font-variant-numeric:tabular-nums}
 .stats span{font-size:13px;line-height:1.35;color:var(--ink-2)}
 .about__r p{color:var(--ink-2);font-size:16.5px}
 .about__r p+p{margin-top:14px}
@@ -247,10 +247,17 @@ p{text-wrap:pretty}
 }
 
 /* ---------- process ---------- */
-.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+/* линия процесса: рельс от первой точки до последней, заливка = прогресс прокрутки (--p ставит скрипт), точки загораются, когда линия до них доходит */
+.steps{--p:0;position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding-top:30px}
+.steps::before,.steps::after{content:"";position:absolute;left:24px;right:calc((100% - 56px) / 5 - 24px);top:8px;height:2px;border-radius:2px;pointer-events:none}
+.steps::before{background:rgba(106,85,232,.16)}
+.steps::after{background:linear-gradient(90deg,#B3A6FF,#5A45E3);transform-origin:0 50%;transform:scaleX(var(--p))}
 .step{position:relative;display:flex;flex-direction:column;gap:10px;padding:18px 16px 20px}
-.step:not(:last-child)::after{content:"";position:absolute;top:38px;right:-14px;width:14px;height:2px;background:linear-gradient(90deg,#B9AEFF,#6A55E8)}
 .step__top{display:flex;align-items:center;justify-content:space-between}
+.step__top::before,.step__top::after{content:"";position:absolute;left:16px;top:-29px;width:14px;height:14px;border-radius:50%;pointer-events:none}
+.step__top::before{background:#fff;box-shadow:inset 0 0 0 2px rgba(106,85,232,.3)}
+.step__top::after{background:linear-gradient(145deg,#8E7CFF,#5A45E3);box-shadow:0 0 0 4px rgba(106,85,232,.16),0 4px 12px -2px rgba(90,69,227,.6);opacity:0;scale:.4;transition:opacity var(--dur-2) var(--ease),scale var(--dur-2) var(--ease)}
+.step.is-on .step__top::after{opacity:1;scale:1}
 .step__n{font-size:13px;font-weight:650;letter-spacing:.06em;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .step__ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(145deg,#E7E0FF,#C4B8FF);color:#4A33C8}
 .step h3{font-size:16.5px;line-height:1.2;letter-spacing:-.01em;font-weight:650}
@@ -358,8 +365,8 @@ textarea.input{min-height:120px;resize:vertical}
 @keyframes pulse2{0%{box-shadow:0 0 0 3px rgba(106,85,232,.18)}70%{box-shadow:0 0 0 9px rgba(106,85,232,0)}100%{box-shadow:0 0 0 3px rgba(106,85,232,0)}}
 @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.js [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity var(--dur-3) var(--ease),transform var(--dur-3) var(--ease);transition-delay:var(--d,0ms)}
-.js [data-reveal].is-in{opacity:1;transform:none}
+.js [data-reveal]:not(.is-done){opacity:0;transform:translateY(22px);transition:opacity var(--dur-3) var(--ease),transform var(--dur-3) var(--ease);transition-delay:var(--d,0ms)}
+.js [data-reveal].is-in:not(.is-done){opacity:1;transform:none}
 /* hero: оркестр загрузки. Заголовок выезжает из маски (слова подзаголовка по очереди), сцена собирается слоями */
 .js .hero__copy>*{animation:rise var(--dur-3) var(--ease) both}
 .js .hero__copy>.hero__h1{animation:none}
@@ -391,6 +398,22 @@ textarea.input{min-height:120px;resize:vertical}
   .aurora-off .aurora i,.is-locked .aurora i{animation-play-state:paused}
 }
 
+/* ---------- глубина при прокрутке (scroll-driven animations; где их нет — всё статично) ---------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.lite) .bg svg{animation:par-bg linear both;animation-timeline:scroll(root)}
+    html:not(.lite) .aurora{animation:par-aurora linear both;animation-timeline:scroll(root);animation-range:0 120vh}
+    html:not(.lite) .hero__visual{animation:par-stage linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
+    html:not(.lite) main>.panel:not(.hero){animation:par-panel linear both;animation-timeline:view();animation-range:entry 0% entry 240px}
+    html:not(.lite) .orb{animation:par-orb linear both;animation-timeline:view()}
+  }
+}
+@keyframes par-bg{to{translate:0 -8vh}}
+@keyframes par-aurora{to{translate:0 -24vh;opacity:.4}}
+@keyframes par-stage{to{translate:0 90px}}
+@keyframes par-panel{from{translate:0 34px}}
+@keyframes par-orb{from{translate:0 46px;rotate:-24deg}to{translate:0 -46px;rotate:24deg}}
+
 /* ---------- responsive ---------- */
 @media (max-width:1210px){
   .brand__txt small{display:none}
@@ -403,8 +426,11 @@ textarea.input{min-height:120px;resize:vertical}
   .svc,.svc:nth-child(n+4){grid-column:auto;min-height:0}
   .svc:last-child:nth-child(odd){grid-column:1/-1}
   .stack__grid{grid-template-columns:repeat(4,1fr)}
-  .steps{grid-template-columns:repeat(3,1fr)}
-  .step:nth-child(3)::after{display:none}
+  /* процесс вертикальной лентой: рельс слева, конец рельса (--rail-e) считает скрипт по высоте последней карточки */
+  .steps{grid-template-columns:1fr;padding:0 0 0 34px}
+  .steps::before,.steps::after{left:9px;right:auto;top:30px;bottom:var(--rail-e,30px);width:2px;height:auto}
+  .steps::after{transform-origin:50% 0;transform:scaleY(var(--p))}
+  .step__top::before,.step__top::after{left:-32px;top:22px}
 }
 @media (max-width:960px){
   .hero{grid-template-columns:1fr}
@@ -434,9 +460,8 @@ textarea.input{min-height:120px;resize:vertical}
   :root{--r-xl:24px}
   .brand__txt small{display:none}
   .sec-head{flex-direction:column;align-items:flex-start;gap:10px}
-  .services__grid,.work__grid,.steps{grid-template-columns:1fr}
+  .services__grid,.work__grid{grid-template-columns:1fr}
   .work-card:last-child:nth-child(odd) .thumb{aspect-ratio:16/11}
-  .step:not(:last-child)::after{display:none}
   .stack__grid{grid-template-columns:repeat(2,1fr)}
   .stats{grid-template-columns:1fr;padding:6px 18px}
   .stats li{flex-direction:row;align-items:center;gap:14px;padding:14px 0}
@@ -454,5 +479,5 @@ textarea.input{min-height:120px;resize:vertical}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .js [data-reveal]{opacity:1;transform:none}
+  .js [data-reveal]:not(.is-done){opacity:1;transform:none}
 }
