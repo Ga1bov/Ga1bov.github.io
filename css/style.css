@@ -373,7 +373,7 @@ textarea.input{min-height:120px;resize:vertical}
 .case__box{max-height:calc(100dvh - 28px);overflow:auto;overscroll-behavior:contain;border-radius:30px;background:rgba(249,248,254,.96);border:1px solid #fff;box-shadow:0 40px 100px -30px rgba(30,20,100,.6)}
 .case[open] .case__box{animation:pop var(--dur-2) var(--ease)}
 .case[open]::backdrop{animation:fade var(--dur-2) var(--ease)}
-.case__head{position:sticky;top:0;z-index:3;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:24px 26px 18px;background:linear-gradient(180deg,rgba(249,248,254,1) 70%,rgba(249,248,254,0))}
+.case__head{position:sticky;top:0;z-index:3;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:24px 26px 18px;background:linear-gradient(180deg,rgba(249,248,254,1) calc(100% - 18px),rgba(249,248,254,0))}
 .case__head h2{margin-top:10px;font-size:clamp(28px,3.4vw,40px);line-height:1.05;letter-spacing:-.035em;font-weight:700}
 .case__sub{margin-top:6px;color:var(--ink-2);max-width:36em}
 .badge{display:inline-block;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:650;color:var(--acc-ink);background:#ECE8FF}
@@ -517,7 +517,6 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
   @media (prefers-reduced-motion: no-preference) {
     html:not(.lite) .bg svg{animation:par-bg linear both;animation-timeline:scroll(root)}
     html:not(.lite) .hero__visual{animation:par-stage linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
-    html:not(.lite) main>.panel:not(.hero){animation:par-panel linear both;animation-timeline:view();animation-range:entry 0% entry 240px}
     html:not(.lite) .orb{animation:par-orb linear both;animation-timeline:view()}
     /* превью работ: слои внутри рамки движутся с разной скоростью, скриншот «листается» */
     html:not(.lite) .work-card{view-timeline:--card block}
@@ -529,7 +528,6 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
 }
 @keyframes par-bg{to{translate:0 -8vh}}
 @keyframes par-stage{to{translate:0 90px}}
-@keyframes par-panel{from{translate:0 34px}}
 @keyframes par-shot{from{translate:0 -6%}to{translate:0 0}}
 @keyframes par-y{from{translate:0 calc(var(--py,10) * 1px)}to{translate:0 calc(var(--py,10) * -1px)}}
 @keyframes slide-focus{0%{opacity:.45;scale:.93}35%,65%{opacity:1;scale:1}100%{opacity:.45;scale:.93}}
@@ -591,17 +589,28 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
   .hero__cta .btn{flex:1 1 100%}
   .chip-card--stat{top:auto;right:auto;bottom:4%;left:0;padding:10px 14px}
   .chip-card--flow,.orb-mini{display:none}
-  .case__head{padding:18px 18px 14px}
+  .case__head{position:relative;padding:18px 70px 12px 18px;background:none}
+  .case__head .round{position:fixed;top:26px;right:26px;z-index:5;box-shadow:0 8px 22px -8px rgba(30,20,90,.5)}
   .case__body{padding:4px 18px 22px}
   .case__pager{padding:0 18px 20px;gap:8px}
   .pager__img{display:none}
   .pager__a{padding:12px 14px}
   .brief__foot .btn{width:100%}
 }
-@media (max-width:380px){.nav{gap:8px}.lang button{min-width:34px;padding:0 8px}}
+@media (max-width:380px){.nav{gap:8px}}
+@media (pointer:coarse){
+  .brand{min-height:44px}
+  .lang button{height:40px;min-width:44px}
+  .round,.gal__bar .round{width:44px;height:44px}
+  .chip span{min-height:44px}
+  .contact__item a{display:inline-block;padding:13px 0;margin:-13px 0}
+  .foot a{display:inline-block;padding:11px 0;margin:-11px 0}
+}
 
 @media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html,.strip{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important;transition-delay:0s!important}
+  .steps{--p:1}
+  .step__top::after{opacity:1;scale:1}
   .js [data-reveal]:not(.is-done){opacity:1;transform:none}
 }
