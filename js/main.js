@@ -219,6 +219,41 @@
   // аврора за стеклом движется, только пока hero на экране
   if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => root.classList.toggle('aurora-off', !e.isIntersecting)).observe(hero);
 
+  /* ---------- микровзаимодействия: подсветка карточек, магнитные кнопки, «волна» нажатия ---------- */
+  if (fine) {
+    document.addEventListener('pointermove', (e) => {
+      const c = e.target.closest && e.target.closest('.svc,.work-card,.tile,.step');
+      if (!c) return;
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--sx', Math.round(e.clientX - r.left) + 'px'); c.style.setProperty('--sy', Math.round(e.clientY - r.top) + 'px');
+    }, { passive: true });
+  }
+  if (fine && !reduce) {
+    $$('.btn').forEach((b) => {
+      b.addEventListener('pointermove', (e) => {
+        // центр по раскладке (без собственного сдвига кнопки), иначе кнопка «догоняет» сама себя
+        const pr = b.offsetParent ? b.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+        const dx = (e.clientX - (pr.left + b.offsetLeft + b.offsetWidth / 2)) / b.offsetWidth;
+        const dy = (e.clientY - (pr.top + b.offsetTop + b.offsetHeight / 2)) / b.offsetHeight;
+        b.style.translate = (dx * 12).toFixed(1) + 'px ' + (dy * 8).toFixed(1) + 'px';
+      });
+      b.addEventListener('pointerleave', () => { b.style.translate = ''; });
+    });
+  }
+  if (!reduce) {
+    document.addEventListener('pointerdown', (e) => {
+      const b = e.target.closest && e.target.closest('button.btn,a.btn,button.round');
+      if (!b || e.button !== 0) return;
+      let fx = b.querySelector(':scope > .fx');
+      if (!fx) { fx = document.createElement('span'); fx.className = 'fx'; fx.setAttribute('aria-hidden', 'true'); b.prepend(fx); }
+      const r = b.getBoundingClientRect(); const s = Math.max(r.width, r.height) * 2.2;
+      const i = document.createElement('i');
+      i.style.cssText = 'width:' + s + 'px;height:' + s + 'px;left:' + (e.clientX - r.left - s / 2) + 'px;top:' + (e.clientY - r.top - s / 2) + 'px';
+      fx.appendChild(i);
+      setTimeout(() => i.remove(), 700);
+    }, { passive: true });
+  }
+
   /* ---------- контакты и доступность из config.js ---------- */
   if (!SITE.available) $('#avail').hidden = true;
   if (tg) {
