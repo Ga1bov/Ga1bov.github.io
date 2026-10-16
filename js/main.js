@@ -49,6 +49,7 @@
   const closeNav = () => { nav.classList.remove('is-open'); burger.setAttribute('aria-expanded', 'false'); };
   burger.addEventListener('click', () => burger.setAttribute('aria-expanded', String(nav.classList.toggle('is-open'))));
   $$('.nav__links a').forEach((a) => a.addEventListener('click', closeNav));
+  $$('.nav__links li').forEach((li, i) => li.style.setProperty('--i', i)); // каскад пунктов мобильного меню
   document.addEventListener('click', (e) => { if (!nav.contains(e.target)) closeNav(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && nav.classList.contains('is-open')) { closeNav(); burger.focus(); } });
 
@@ -64,6 +65,20 @@
     }), { rootMargin: '-40% 0px -55% 0px' });
     ['top', 'about', 'services', 'work', 'process', 'faq', 'contact'].forEach((id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
   }
+
+  /* ---------- прокрутка: плотность шапки и прогресс чтения ---------- */
+  const bar = $('.nav__progress i');
+  let ticking = false;
+  function onScrollFrame() {
+    ticking = false;
+    const y = window.scrollY; const max = root.scrollHeight - innerHeight;
+    root.classList.toggle('is-scrolled', y > 16);
+    bar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, y / max) : 0).toFixed(4) + ')';
+  }
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(onScrollFrame); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  onScrollFrame();
 
   /* ---------- появление при скролле ---------- */
   if ('IntersectionObserver' in window) {
