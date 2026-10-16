@@ -11,10 +11,9 @@
   const tg = String(SITE.telegram || '').replace(/^@/, '').trim();
   const viaApi = Boolean(SITE.endpoint);
 
-  /* ---------- кейсы: галереи с кнопками и счётчиком, соседние проекты внизу окна.
-     Строится до снятия текстов для i18n: скопированные названия переводятся вместе со страницей ---------- */
+  /* ---------- кейсы: галереи с кнопками и счётчиком, соседние проекты внизу окна — собираются при первом открытии окна ---------- */
   const caseCards = $$('[data-case]');
-  $$('.strip').forEach((s) => {
+  function buildGallery(s) {
     const g = document.createElement('div'); g.className = 'gal';
     s.before(g); g.appendChild(s);
     const bar = document.createElement('div'); bar.className = 'gal__bar';
@@ -34,9 +33,9 @@
     let q = 0;
     s.addEventListener('scroll', () => { if (!q) q = requestAnimationFrame(() => { q = 0; g.upd(); }); }, { passive: true });
     imgs.forEach((im) => im.addEventListener('load', g.upd));
-  });
-  caseCards.forEach((card, i) => {
-    const d = $('#case-' + card.dataset.case); if (!d) return;
+  }
+  function buildPager(d) {
+    const i = caseCards.findIndex((c) => 'case-' + c.dataset.case === d.id);
     const nav = document.createElement('nav'); nav.className = 'case__pager'; nav.dataset.dynLabel = 'case.more';
     [[-1, 'prev'], [1, 'next']].forEach(([k, dir]) => {
       const other = caseCards[(i + k + caseCards.length) % caseCards.length];
@@ -44,19 +43,34 @@
       b.className = 'pager__a pager__a--' + dir; b.dataset.goto = other.dataset.case; b.dataset.dir = dir;
       const tone = Array.from(other.querySelector('.thumb').classList).find((c) => c.indexOf('thumb--') === 0) || '';
       b.innerHTML = '<span class="pager__img ' + tone + '" aria-hidden="true"></span><span class="pager__t"><small data-dyn="case.' + dir + '"></small></span>';
-      const im = other.querySelector('.thumb img').cloneNode(); im.alt = ''; im.loading = 'lazy';
+      // адрес ставится только при открытии/наведении (warmCase): копия картинки вне документа начала бы грузиться сразу
+      const im = document.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
+      im.dataset.src = other.querySelector('.thumb img').getAttribute('src');
       b.firstChild.appendChild(im);
-      const t = other.querySelector('.work-card__title').cloneNode(true); t.className = 'pager__title';
+      const src = other.querySelector('.work-card__title'); const t = src.cloneNode(true); t.className = 'pager__title';
       b.lastChild.appendChild(t);
+      // переводимое название: если русские оригиналы уже сняты, добавляем копию к ним (с русским текстом источника)
+      const o = orig && t.hasAttribute('data-i18n') && orig.find((x) => x.el === src);
+      if (o) orig.push({ el: t, t: o.t });
+      onIntent(b, () => warmCase(b.dataset.goto));
       nav.appendChild(b);
     });
     $('.case__box', d).appendChild(nav);
-  });
+  }
+  function buildCase(d) {
+    if (d.dataset.built) return;
+    d.dataset.built = '1';
+    $$('.strip', d).forEach(buildGallery);
+    buildPager(d);
+    $$('[data-dyn]', d).forEach((el) => { el.textContent = dyn(el.dataset.dyn); });
+    $$('[data-dyn-label]', d).forEach((el) => el.setAttribute('aria-label', dyn(el.dataset.dynLabel)));
+  }
 
   /* ---------- i18n: русские оригиналы берём из DOM, английские — из i18n.js ---------- */
-  let lang = 'ru';
-  const orig = [];
-  $$('[data-i18n],[data-i18n-html],[data-i18n-attr]').forEach((el) => {
+  let lang = 'ru'; let domLang = 'ru'; // domLang — на каком языке сейчас тексты в DOM
+  // оригиналы снимаются при первой смене языка: до неё DOM и так на русском, и стартовый скрипт не читает ~200 элементов
+  let orig = null;
+  const capture = () => orig || (orig = $$('[data-i18n],[data-i18n-html],[data-i18n-attr]').map((el) => {
     const o = { el };
     if (el.hasAttribute('data-i18n')) o.t = el.textContent;
     if (el.hasAttribute('data-i18n-html')) o.h = el.innerHTML;
@@ -66,63 +80,45 @@
         return { at, key, ru: el.getAttribute(at) };
       });
     }
-    orig.push(o);
-  });
+    return o;
+  }));
   const dyn = (k) => (D.dyn[lang] && D.dyn[lang][k]) || D.dyn.ru[k] || k;
   const pick = (key, fallback) => (lang === 'en' && D.en[key] != null ? D.en[key] : fallback);
 
-  function setLang(next, persist, intro) {
+  function setLang(next, persist) {
     lang = next === 'en' ? 'en' : 'ru';
-    orig.forEach((o) => {
-      if ('t' in o) o.el.textContent = pick(o.el.getAttribute('data-i18n'), o.t);
-      if ('h' in o) o.el.innerHTML = pick(o.el.getAttribute('data-i18n-html'), o.h);
-      if (o.a) o.a.forEach((a) => o.el.setAttribute(a.at, pick(a.key, a.ru)));
-    });
-    $$('[data-dyn]').forEach((el) => { el.textContent = dyn(el.dataset.dyn); });
+    // при старте на русском тексты уже на месте: не переписываем ~200 элементов (каждая запись — перекладка страницы)
+    if (lang !== domLang) {
+      capture().forEach((o) => {
+        if ('t' in o) o.el.textContent = pick(o.el.getAttribute('data-i18n'), o.t);
+        if ('h' in o) o.el.innerHTML = pick(o.el.getAttribute('data-i18n-html'), o.h);
+        if (o.a) o.a.forEach((a) => o.el.setAttribute(a.at, pick(a.key, a.ru)));
+      });
+      domLang = lang;
+    }
+    $$('[data-dyn]').forEach((el) => { const v = dyn(el.dataset.dyn); if (el.textContent !== v) el.textContent = v; });
     $$('[data-dyn-label]').forEach((el) => el.setAttribute('aria-label', dyn(el.dataset.dynLabel)));
     root.lang = lang;
     $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
     if (persist) { try { localStorage.setItem('gb-lang', lang); } catch (e) { /* private mode */ } }
-    splitHero(intro);
     rail = null; // высота карточек процесса зависит от языка
     renderSent();
     clearErrors();
   }
 
-  /* ---------- hero: подзаголовок по словам (маска + сдвиг), градиент делится между словами ---------- */
+  // смена языка: видимые тексты гаснут, меняются и проявляются; строки подзаголовка hero заново выезжают из маски (новые элементы = новая CSS-анимация)
   const sub = $('.hero__sub');
-  function splitHero(intro) {
-    sub.classList.add('is-ready');
-    if (reduce || /<(?!br\b)/i.test(sub.innerHTML)) return; // только текст и <br>
-    let i = 0;
-    sub.innerHTML = sub.innerHTML.split(/<br\s*\/?>/i).map((line) => line.trim().split(/\s+/)
-      .map((w) => '<span class="w"><span class="w__i" style="--wi:' + (i++) + '">' + w + '</span></span>').join(' ')).join('<br>');
-    sub.classList.add('is-split');
-    sub.classList.toggle('no-intro', !intro);
-    paintSub();
-  }
-  function paintSub() {
-    if (!sub.classList.contains('is-split')) return;
-    const r = sub.getBoundingClientRect(); const ws = $$('.w__i', sub);
-    const xs = ws.map((w) => w.getBoundingClientRect().left);
-    ws.forEach((w, i) => { w.style.backgroundSize = r.width + 'px 100%'; w.style.backgroundPosition = (r.left - xs[i]) + 'px 0'; });
-  }
-  let rsT = 0;
-  addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(paintSub, 150); });
-  if (document.fonts) document.fonts.ready.then(paintSub);
-  // смена языка: видимые тексты гаснут, меняются и проявляются; подзаголовок hero заново собирается по словам
   $$('[data-lang]').forEach((b) => b.addEventListener('click', () => switchLang(b.dataset.lang)));
   function switchLang(next) {
     if (next === lang) return;
-    const heroIn = hero.getBoundingClientRect().bottom > 0;
-    if (reduce) return setLang(next, true, false);
+    if (reduce) return setLang(next, true);
     const els = $$('[data-i18n],[data-i18n-html],[data-dyn],.pager__title').filter((el) => {
       if (el === sub) return false;
       const r = el.getBoundingClientRect(); return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
     });
     els.forEach((el) => el.classList.add('i18n-fade', 'i18n-out'));
     setTimeout(() => {
-      setLang(next, true, heroIn);
+      setLang(next, true);
       requestAnimationFrame(() => {
         els.forEach((el) => el.classList.remove('i18n-out'));
         setTimeout(() => els.forEach((el) => el.classList.remove('i18n-fade')), 200);
@@ -218,9 +214,9 @@
     } else rail = { vertical, fr: stepEls.map((s, i) => i / (stepEls.length - 1)) };
   }
   function drawSteps() {
-    if (!rail) measureSteps();
     const r = steps.getBoundingClientRect(); const vh = innerHeight;
-    if (r.top > vh || r.bottom < 0) return;
+    if (r.top > vh || r.bottom < 0) return; // секция за экраном — не меряем
+    if (!rail) measureSteps();
     let p = reduce ? 1 : rail.vertical ? (vh * 0.62 - (r.top + rail.top)) / rail.len : (vh * 0.9 - r.top) / (vh * 0.45);
     p = Math.max(0, Math.min(1, p));
     steps.style.setProperty('--p', p.toFixed(4));
@@ -261,7 +257,7 @@
 
   /* ---------- hero: 3D-наклон сцены за курсором (плавный догон, только transform) ---------- */
   const stage = $('#stage'); const hero = $('#top');
-  if (stage && fine && !reduce) {
+  if (stage && fine && !reduce && !root.classList.contains('lite')) {
     const clamp = (v) => Math.max(-1, Math.min(1, v));
     const tilt = $('.stage__tilt', stage);
     const glares = $$('.dev-browser,.dev-phone', stage).map((d) => {
@@ -370,7 +366,7 @@
     document.startViewTransition(update).finished.finally(done);
   };
   const cardOf = (d) => $('[data-case="' + d.id.slice(5) + '"]');
-  const show = (d) => { d.showModal(); lock(true); $('.case__box', d).scrollTop = 0; $$('.gal', d).forEach((g) => g.upd()); };
+  const show = (d) => { buildCase(d); warmCase(d.id.slice(5)); root.classList.add('ready'); d.showModal(); lock(true); $('.case__box', d).scrollTop = 0; $$('.gal', d).forEach((g) => g.upd()); };
   function openCase(card) {
     const d = $('#case-' + card.dataset.case);
     if (!d || typeof d.showModal !== 'function') return;
@@ -396,10 +392,12 @@
     morph([from, to], () => { name([[a, ''], [b, 'case-box']]); run(); }, () => { name([[b, '']]); delete root.dataset.vt; });
   }
   // картинки кейса подгружаем заранее (наведение, фокус, касание): окно открывается уже с кадрами, переход не ждёт декодирования
-  const warmCase = (id) => $$('#case-' + id + ' img[loading="lazy"]').forEach((im) => { im.loading = 'eager'; });
+  const warmCase = (id) => $$('#case-' + id + ' img').forEach((im) => {
+    if (im.dataset.src) { im.src = im.dataset.src; im.removeAttribute('data-src'); }
+    im.loading = 'eager';
+  });
   const onIntent = (el, fn) => ['pointerenter', 'focus', 'touchstart'].forEach((t) => el.addEventListener(t, fn, { once: true, passive: true }));
   caseCards.forEach((b) => { b.addEventListener('click', () => openCase(b)); onIntent(b, () => warmCase(b.dataset.case)); });
-  $$('.pager__a').forEach((b) => onIntent(b, () => warmCase(b.dataset.goto)));
   $$('dialog.case').forEach((d) => {
     d.addEventListener('click', (e) => {
       const go = e.target.closest('[data-goto]');
@@ -551,6 +549,11 @@
   /* ---------- старт ---------- */
   $('#year').textContent = new Date().getFullYear();
   let saved = ''; try { saved = localStorage.getItem('gb-lang') || ''; } catch (e) { /* private mode */ }
-  setLang((new URLSearchParams(location.search).get('lang') || saved) === 'en' ? 'en' : 'ru', false, true);
-  onScrollFrame();
+  setLang((new URLSearchParams(location.search).get('lang') || saved) === 'en' ? 'en' : 'ru', false);
+  if (window.scrollY > 0) requestAnimationFrame(onScrollFrame); // открыли не с верха (восстановление прокрутки, якорь)
+  // аврора — в простое после загрузки, анимации, привязанные к прокрутке, — с первой прокруткой (раньше они не видны):
+  // первая отрисовка не ждёт ни больших градиентов, ни таймлайнов
+  const lit = () => (window.requestIdleCallback || setTimeout)(() => { hero.classList.add('is-lit'); root.classList.add('grain'); }, { timeout: 2500 });
+  if (document.readyState === 'complete') lit(); else addEventListener('load', lit, { once: true });
+  addEventListener('scroll', () => root.classList.add('ready'), { once: true, passive: true });
 })();

@@ -12,7 +12,7 @@ window.I18N = {
 
     'hero.avail': 'Open for new projects',
     'hero.eyebrow': 'Independent developer',
-    'hero.sub': 'Websites &amp; apps,<br>end to end',
+    'hero.sub': '<span class="ln"><span>Websites &amp; apps,</span></span><br><span class="ln"><span>end to end</span></span>',
     'hero.lead': 'I design and build digital products: from a landing page to a mobile app with 3D and an admin panel. One person, direct communication and clear timelines.',
     'hero.cta1': 'View my work', 'hero.cta2': 'Start a project',
     'hero.stack': 'Built with',

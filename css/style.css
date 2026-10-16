@@ -17,8 +17,6 @@
   --ease:cubic-bezier(.22,.9,.3,1);
   --ease-io:cubic-bezier(.65,.05,.36,1);
   --dur-1:160ms; --dur-2:320ms; --dur-3:700ms;
-  /* зерно матового стекла: статичная плитка, считается один раз */
-  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .16 0 0 0 0 .12 0 0 0 0 .36 0 0 0 1.1 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.16'/%3E%3C/svg%3E");
   --gut:clamp(14px,3vw,32px);
 }
 
@@ -45,11 +43,14 @@ ul,ol{list-style:none}
     radial-gradient(900px 700px at 70% 105%,#E4E9FA 0,rgba(228,233,250,0) 62%),
     linear-gradient(180deg,#EFEDF6 0%,#E9E7F2 55%,#EEECF6 100%)}
 .bg svg{position:absolute;inset:0;width:100%;height:100%}
-.bg::after{content:"";position:absolute;inset:0;background:var(--grain)}
+/* зерно только на фоне страницы (на блоках первого экрана плитка становилась для Chrome «картинкой» LCP); готовая PNG-плитка 112 px,
+   подключается после загрузки (класс .grain) — не занимает сеть, пока грузится первый экран */
+.bg::after{content:"";position:absolute;inset:0}
+.grain .bg::after{background:url(../assets/grain.png)}
 
 /* ---------- glass ---------- */
 .glass{
-  background:var(--grain),linear-gradient(180deg,rgba(255,255,255,.76),rgba(255,255,255,.5));
+  background:linear-gradient(180deg,rgba(255,255,255,.76),rgba(255,255,255,.5));
   border:1px solid rgba(255,255,255,.92);
   box-shadow:0 1px 0 rgba(255,255,255,.95) inset,var(--shadow-1);
   -webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
@@ -102,8 +103,8 @@ button.round:active{transform:scale(.92)}
 /* стекло шапки — два слоя: обычный и плотный с более сильным blur; плотный проявляется при прокрутке */
 .nav.glass{background:none;border-color:transparent;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .nav::before,.nav::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none}
-.nav::before{background:var(--grain),linear-gradient(180deg,rgba(255,255,255,.76),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.92);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,var(--shadow-1);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
-.nav::after{background:var(--grain),linear-gradient(180deg,rgba(252,251,255,.88),rgba(247,245,255,.74));border:1px solid #fff;box-shadow:0 1px 0 #fff inset,0 18px 40px -20px rgba(60,45,150,.45);-webkit-backdrop-filter:blur(40px) saturate(1.8);backdrop-filter:blur(40px) saturate(1.8);opacity:0;visibility:hidden;transition:opacity var(--dur-2) var(--ease),visibility 0s linear var(--dur-2)}
+.nav::before{background:linear-gradient(180deg,rgba(255,255,255,.76),rgba(255,255,255,.5));border:1px solid rgba(255,255,255,.92);box-shadow:0 1px 0 rgba(255,255,255,.95) inset,var(--shadow-1);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5)}
+.nav::after{background:linear-gradient(180deg,rgba(252,251,255,.88),rgba(247,245,255,.74));border:1px solid #fff;box-shadow:0 1px 0 #fff inset,0 18px 40px -20px rgba(60,45,150,.45);-webkit-backdrop-filter:blur(40px) saturate(1.8);backdrop-filter:blur(40px) saturate(1.8);opacity:0;visibility:hidden;transition:opacity var(--dur-2) var(--ease),visibility 0s linear var(--dur-2)}
 .is-scrolled .nav::after{opacity:1;visibility:visible;transition-delay:0s}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.nav::before{background:rgba(255,255,255,.92)}}
 .nav__progress{position:absolute;left:22px;right:22px;bottom:0;height:2px;border-radius:2px;overflow:hidden;pointer-events:none}
@@ -141,38 +142,34 @@ button.round:active{transform:scale(.92)}
 .eyebrow{display:block;margin-top:26px;font-size:12px;font-weight:650;letter-spacing:.16em;text-transform:uppercase;color:var(--acc-ink)}
 .hero__h1{margin-top:12px}
 .hero__title{display:block;font-size:clamp(58px,9.4vw,116px);line-height:.92;letter-spacing:-.05em;font-weight:700}
-.hero__sub{display:block;margin-top:14px;font-size:clamp(26px,3.5vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:650;color:var(--acc-ink);background:linear-gradient(95deg,#5A45E3 8%,#7864F2 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-/* маска строки/слова: текст выезжает снизу из-под невидимой кромки; поля с отрицательными отступами не режут выносные элементы и не меняют раскладку */
-.mask,.w{display:inline-block;vertical-align:top;overflow:hidden;padding:.12em .08em .18em;margin:-.12em -.08em -.18em}
-.mask>span,.w__i{display:inline-block}
-.hero__sub.is-split{background:none}
-/* у каждого слова свой кусок общего градиента (размер и сдвиг ставит скрипт): background-clip:text не видит сдвинутые слова */
-.hero__sub .w__i{background:linear-gradient(95deg,#5A45E3 8%,#7864F2 92%) 0 0/100% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero__sub{display:block;margin-top:14px;font-size:clamp(26px,3.5vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:650;color:var(--acc-ink)}
+/* маска строки: текст выезжает снизу из-под невидимой кромки (чистый CSS, без скрипта); поля с отрицательными отступами не режут выносные элементы и не меняют раскладку */
+.mask,.ln{display:inline-block;vertical-align:top;overflow:hidden;padding:.12em .08em .18em;margin:-.12em -.08em -.18em}
+.mask>span,.ln>span{display:inline-block}
+/* градиент у каждой строки свой, но одной ширины (12em ≈ ширина колонки) и от левого края — как был у всего блока */
+.ln>span{background:linear-gradient(95deg,#5A45E3 8%,#7864F2 92%) 0 0/12em 100% no-repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .hero__lead{margin-top:20px;max-width:31em;font-size:clamp(16px,1.35vw,18px);color:var(--ink-2)}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hero__stack{margin-top:36px}
 .hero__stack small{display:block;margin-bottom:10px;font-size:13px;color:var(--ink-3)}
 .wordmarks{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:17px;font-weight:650;letter-spacing:-.02em;color:var(--ink-3)}
 
-/* сцена: слои стоят на разной глубине (translateZ), курсор наклоняет всю сцену; scale компенсирует перспективу, чтобы в покое композиция не менялась */
-.hero__visual{position:relative;width:100%;max-width:560px;margin-inline:auto;aspect-ratio:1/1;container-type:inline-size;perspective:1400px}
-/* наклон пишет скрипт прямо в transform (без CSS-переменных: они пересчитывали стили всей сцены каждый кадр); will-change фиксирует масштаб растра — слои не перерисовываются */
-.stage__tilt{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
-.stage__tilt>*{will-change:transform}
-.frame{position:absolute;inset:0;border-radius:15%;border:1px solid rgba(255,255,255,.95);background:linear-gradient(160deg,rgba(255,255,255,.74),rgba(255,255,255,.16));box-shadow:0 40px 90px -42px rgba(80,60,200,.55),inset 0 0 0 10px rgba(255,255,255,.2);transform:translateZ(-40px) scale(1.029)}
-.glow{position:absolute;inset:6% 2% -2% 4%;border-radius:50%;background:radial-gradient(closest-side,rgba(138,118,255,.5),rgba(138,118,255,.22) 50%,rgba(138,118,255,0));transform:translateZ(-60px) scale(1.043)}
+.hero__visual{position:relative;width:100%;max-width:560px;margin-inline:auto;aspect-ratio:1/1;container-type:inline-size}
+.stage__tilt{position:absolute;inset:0}
+.frame{position:absolute;inset:0;border-radius:15%;border:1px solid rgba(255,255,255,.95);background:linear-gradient(160deg,rgba(255,255,255,.74),rgba(255,255,255,.16));box-shadow:0 40px 90px -42px rgba(80,60,200,.55),inset 0 0 0 10px rgba(255,255,255,.2)}
+.glow{position:absolute;inset:6% 2% -2% 4%;border-radius:50%;background:radial-gradient(closest-side,rgba(138,118,255,.5),rgba(138,118,255,.22) 50%,rgba(138,118,255,0))}
 .dev-browser{position:absolute;left:7%;top:11%;width:80%;border-radius:4% / 5%;background:#fff;overflow:hidden;rotate:-2deg;box-shadow:0 32px 60px -28px rgba(40,30,120,.6),0 0 0 1px rgba(30,20,90,.06)}
 .dev-browser__bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#F5F4FA;border-bottom:1px solid rgba(30,20,90,.06)}
 .dev-browser__bar i{width:9px;height:9px;border-radius:50%;background:#D9D6E8}
 .dev-browser__url{margin-left:10px;max-width:68%;padding:3px 12px;border-radius:999px;background:#fff;font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dev-browser img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top}
-.dev-phone{position:absolute;right:3%;bottom:6%;width:34%;aspect-ratio:9/17.6;padding:2.4%;border-radius:15% / 7.6%;rotate:3deg;overflow:hidden;background:linear-gradient(145deg,#2c2b3d,#0b0b12);box-shadow:0 40px 70px -26px rgba(52,34,150,.75),inset 0 0 0 1.5px rgba(255,255,255,.18);transform:translateZ(46px) scale(.967)}
+.dev-phone{position:absolute;right:3%;bottom:6%;width:34%;aspect-ratio:9/17.6;padding:2.4%;border-radius:15% / 7.6%;rotate:3deg;overflow:hidden;background:linear-gradient(145deg,#2c2b3d,#0b0b12);box-shadow:0 40px 70px -26px rgba(52,34,150,.75),inset 0 0 0 1.5px rgba(255,255,255,.18)}
 .dev-phone img{width:100%;height:100%;object-fit:cover;border-radius:12% / 6%}
 /* блик: светлая полоса скользит по экранам вслед за наклоном (элемент .glare добавляет скрипт, свой слой) */
 .glare{position:absolute;inset:0 -70%;pointer-events:none;background:linear-gradient(105deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.34) 48%,rgba(255,255,255,0) 58%);opacity:0;will-change:transform;transition:opacity var(--dur-3) var(--ease)}
 .chip-card{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px}
-.chip-card--stat{top:4%;right:-3%;transform:translateZ(80px) scale(.943)}
-.chip-card--flow{left:-3%;bottom:7%;display:block;width:clamp(176px,46%,236px);transform:translateZ(64px) scale(.954)}
+.chip-card--stat{top:4%;right:-3%}
+.chip-card--flow{left:-3%;bottom:7%;display:block;width:clamp(176px,46%,236px)}
 .chip-card__n{font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1}
 .chip-card b{display:block;font-size:14px;font-weight:650;line-height:1.2}
 .chip-card small{display:block;font-size:12px;color:var(--ink-2);line-height:1.3}
@@ -181,7 +178,21 @@ button.round:active{transform:scale(.92)}
 .flow li::before{content:"";z-index:1;width:12px;height:12px;border-radius:50%;background:linear-gradient(145deg,#8E7CFF,#5A45E3);box-shadow:0 0 0 3px rgba(106,85,232,.18)}
 .flow li:not(:last-child)::after{content:"";position:absolute;top:5px;left:calc(50% + 7px);width:calc(100% - 14px);height:2px;border-radius:2px;background:linear-gradient(90deg,#8E7CFF,#CFC7FF)}
 .flow li:last-child::after{content:"";position:absolute;top:0;left:calc(50% - 6px);width:12px;height:12px;border-radius:50%;background:rgba(106,85,232,.35);animation:ring 2.6s var(--ease) infinite}
-.orb-mini{position:absolute;left:-4%;top:40%;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--acc-ink);transform:translateZ(100px) scale(.929)}
+.orb-mini{position:absolute;left:-4%;top:40%;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--acc-ink)}
+/* 3D-сцена только там, где есть наклон за мышью: слои на разной глубине (translateZ), scale компенсирует перспективу, чтобы в покое композиция не менялась.
+   Наклон пишет скрипт прямо в transform (CSS-переменные пересчитывали стили всей сцены каждый кадр); will-change фиксирует масштаб растра.
+   На телефонах и слабых устройствах сцена плоская: без видеокарты 3D-слои стоили до 1,5 с работы при загрузке */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  html:not(.lite) .hero__visual{perspective:1400px}
+  html:not(.lite) .stage__tilt{transform-style:preserve-3d;will-change:transform}
+  html:not(.lite) .stage__tilt>*{will-change:transform}
+  html:not(.lite) .frame{transform:translateZ(-40px) scale(1.029)}
+  html:not(.lite) .glow{transform:translateZ(-60px) scale(1.043)}
+  html:not(.lite) .dev-phone{transform:translateZ(46px) scale(.967)}
+  html:not(.lite) .chip-card--stat{transform:translateZ(80px) scale(.943)}
+  html:not(.lite) .chip-card--flow{transform:translateZ(64px) scale(.954)}
+  html:not(.lite) .orb-mini{transform:translateZ(100px) scale(.929)}
+}
 .orb-mini .ico{width:24px;height:24px}
 
 /* ---------- about ---------- */
@@ -435,8 +446,7 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
 
 /* ---------- motion ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes mask-up{from{transform:translateY(110%)}}
-@keyframes show{to{opacity:1}}
+@keyframes mask-up{from{opacity:0;transform:translateY(110%)}}
 @keyframes in-rise{from{opacity:0;translate:0 44px}}
 @keyframes in-pop{from{opacity:0;scale:.86}}
 @keyframes float-a{from{translate:0 -6px}to{translate:0 8px}}
@@ -462,22 +472,23 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
 .js .hero__copy>.hero__h1{animation:none}
 .hero__copy>:nth-child(2){animation-delay:.06s}.hero__copy>:nth-child(4){animation-delay:.24s}.hero__copy>:nth-child(5){animation-delay:.34s}.hero__copy>:nth-child(6){animation-delay:.44s}
 .js .hero__title .mask>span{animation:mask-up var(--dur-3) var(--ease) .04s both}
-.js .hero__sub{opacity:0;animation:show 0s 2.5s forwards} /* страховка на случай, если скрипт не загрузится */
-.js .hero__sub.is-ready{opacity:1;animation:none}
-.hero__sub .w__i{animation:mask-up var(--dur-3) var(--ease) both;animation-delay:calc(.14s + var(--wi,0) * 70ms)}
-.hero__sub.no-intro .w__i{animation:none}
-.js .frame{animation:in-pop 1s var(--ease) .06s both}
-.js .glow{animation:fade 1.4s var(--ease) .2s both}
-.js .dev-browser{animation:in-rise .95s var(--ease) .16s both}
-.js .dev-phone{animation:in-rise 1.05s var(--ease) .28s both}
-.js .chip-card--stat{animation:in-pop .8s var(--ease) .52s both,float-a 6s var(--ease-io) 1.4s infinite alternate both}
-.js .chip-card--flow{animation:in-pop .8s var(--ease) .62s both,float-b 8s var(--ease-io) 1.4s infinite alternate both}
-.js .orb-mini{animation:in-pop .8s var(--ease) .72s both,float-c 5s var(--ease-io) 1.4s infinite alternate both}
-.lite .chip-card,.lite .orb-mini{animation-iteration-count:1,1}
+.js .hero__sub .ln>span{animation:mask-up var(--dur-3) var(--ease) .14s both}
+.js .hero__sub .ln:nth-of-type(2)>span{animation-delay:.24s}
+@media (min-width:961px){
+  .js .frame{animation:in-pop 1s var(--ease) .06s both}
+  .js .glow{animation:fade 1.4s var(--ease) .2s both}
+  .js .dev-browser{animation:in-rise .95s var(--ease) .16s both}
+  .js .dev-phone{animation:in-rise 1.05s var(--ease) .28s both}
+  .js .chip-card--stat{animation:in-pop .8s var(--ease) .52s both,float-a 6s var(--ease-io) 1.4s infinite alternate both}
+  .js .chip-card--flow{animation:in-pop .8s var(--ease) .62s both,float-b 8s var(--ease-io) 1.4s infinite alternate both}
+  .js .orb-mini{animation:in-pop .8s var(--ease) .72s both,float-c 5s var(--ease-io) 1.4s infinite alternate both}
+  .lite .chip-card,.lite .orb-mini{animation-iteration-count:1,1}
+}
 @media (hover:hover) and (pointer:fine){.hero:hover .glare{opacity:1}}
 /* аврора: три мягких пятна в цветах работ (фиолетовый бренда, мятный Noverim, розовый Melty); движутся только при мыши и не на слабых устройствах */
 .hero{isolation:isolate}
-.aurora{position:absolute;inset:0;z-index:-1;border-radius:inherit;overflow:hidden;pointer-events:none}
+.aurora{position:absolute;inset:0;z-index:-1;border-radius:inherit;overflow:hidden;pointer-events:none;display:none}
+.hero.is-lit .aurora{display:block;animation:fade 1.6s var(--ease) both}
 .aurora i{position:absolute;width:62%;aspect-ratio:1;border-radius:50%}
 .aurora i:nth-child(1){left:-14%;top:-30%;background:radial-gradient(closest-side,rgba(142,124,255,.3),rgba(142,124,255,0))}
 .aurora i:nth-child(2){right:-16%;top:-26%;background:radial-gradient(closest-side,rgba(96,196,160,.24),rgba(96,196,160,0))}
@@ -515,15 +526,15 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
 /* ---------- глубина при прокрутке (scroll-driven animations; где их нет — всё статично) ---------- */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    html:not(.lite) .bg svg{animation:par-bg linear both;animation-timeline:scroll(root)}
-    html:not(.lite) .hero__visual{animation:par-stage linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
-    html:not(.lite) .orb{animation:par-orb linear both;animation-timeline:view()}
+    html.ready:not(.lite) .bg svg{animation:par-bg linear both;animation-timeline:scroll(root)}
+    html.ready:not(.lite) .hero__visual{animation:par-stage linear both;animation-timeline:view();animation-range:exit 0% exit 100%}
+    html.ready:not(.lite) .orb{animation:par-orb linear both;animation-timeline:view()}
     /* превью работ: слои внутри рамки движутся с разной скоростью, скриншот «листается» */
-    html:not(.lite) .work-card{view-timeline:--card block}
-    html:not(.lite) .shot img{animation:par-shot linear both;animation-timeline:--card}
-    html:not(.lite) :is(.ph,.sl){animation:par-y linear both;animation-timeline:--card}
+    html.ready:not(.lite) .work-card{view-timeline:--card block}
+    html.ready:not(.lite) .shot img{animation:par-shot linear both;animation-timeline:--card}
+    html.ready:not(.lite) :is(.ph,.sl){animation:par-y linear both;animation-timeline:--card}
     /* галерея кейса: кадр в центре — в фокусе, соседние приглушены */
-    .strip--wide img{animation:slide-focus linear both;animation-timeline:view(inline)}
+    .ready .strip--wide img{animation:slide-focus linear both;animation-timeline:view(inline)}
   }
 }
 @keyframes par-bg{to{translate:0 -8vh}}
@@ -563,7 +574,7 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
   .case__body{grid-template-columns:1fr}
 }
 @media (max-width:1000px){
-  .nav__links{position:absolute;left:0;right:0;top:calc(100% + 8px);display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:22px;background:var(--grain),rgba(250,249,255,.9);border:1px solid #fff;box-shadow:var(--shadow-2);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);
+  .nav__links{position:absolute;left:0;right:0;top:calc(100% + 8px);display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:22px;background:rgba(250,249,255,.9);border:1px solid #fff;box-shadow:var(--shadow-2);-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);
     visibility:hidden;opacity:0;transform:translateY(-8px) scale(.98);transform-origin:50% 0;transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease),visibility 0s linear var(--dur-2)}
   .nav.is-open .nav__links{visibility:visible;opacity:1;transform:none;transition-delay:0s}
   .nav__links li{opacity:0;transform:translateY(-6px);transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease)}
