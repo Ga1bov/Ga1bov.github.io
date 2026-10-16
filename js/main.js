@@ -110,7 +110,25 @@
   let rsT = 0;
   addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(paintSub, 150); });
   if (document.fonts) document.fonts.ready.then(paintSub);
-  $$('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
+  // смена языка: видимые тексты гаснут, меняются и проявляются; подзаголовок hero заново собирается по словам
+  $$('[data-lang]').forEach((b) => b.addEventListener('click', () => switchLang(b.dataset.lang)));
+  function switchLang(next) {
+    if (next === lang) return;
+    const heroIn = hero.getBoundingClientRect().bottom > 0;
+    if (reduce) return setLang(next, true, false);
+    const els = $$('[data-i18n],[data-i18n-html],[data-dyn],.pager__title').filter((el) => {
+      if (el === sub) return false;
+      const r = el.getBoundingClientRect(); return r.width > 0 && r.bottom > 0 && r.top < innerHeight;
+    });
+    els.forEach((el) => el.classList.add('i18n-fade', 'i18n-out'));
+    setTimeout(() => {
+      setLang(next, true, heroIn);
+      requestAnimationFrame(() => {
+        els.forEach((el) => el.classList.remove('i18n-out'));
+        setTimeout(() => els.forEach((el) => el.classList.remove('i18n-fade')), 200);
+      });
+    }, 120);
+  }
 
   /* ---------- навигация ---------- */
   const nav = $('#nav'); const burger = $('#burger');
@@ -300,6 +318,32 @@
       fx.appendChild(i);
       setTimeout(() => i.remove(), 700);
     }, { passive: true });
+  }
+
+  /* ---------- курсор-кольцо: догоняет мышь, растёт над ссылками и кнопками (системный курсор остаётся) ---------- */
+  if (fine && !reduce) {
+    const ring = document.createElement('div'); ring.className = 'cursor'; ring.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(ring);
+    let x = 0, y = 0, cx = 0, cy = 0, raf = 0, last = 0, seen = false;
+    const step = (t) => {
+      const k = 1 - Math.pow(0.7, Math.max(1, t - last) / 16.7); last = t;
+      cx += (x - cx) * k; cy += (y - cy) * k;
+      ring.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
+      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(step) : 0;
+    };
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      x = e.clientX; y = e.clientY;
+      if (!seen) { seen = true; cx = x; cy = y; }
+      const t = e.target.closest ? e.target : document.body;
+      ring.classList.add('is-on');
+      ring.classList.toggle('is-hot', Boolean(t.closest('a,button,summary,label')));
+      ring.classList.toggle('is-text', Boolean(t.closest('input,textarea')));
+      if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
+    }, { passive: true });
+    addEventListener('pointerdown', () => ring.classList.add('is-down'), { passive: true });
+    addEventListener('pointerup', () => ring.classList.remove('is-down'), { passive: true });
+    root.addEventListener('mouseleave', () => ring.classList.remove('is-on'));
   }
 
   /* ---------- контакты и доступность из config.js ---------- */

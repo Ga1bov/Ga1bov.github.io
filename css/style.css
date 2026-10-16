@@ -475,6 +475,18 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
   :is(.svc,.work-card,.tile,.step):hover::before,:is(.svc,.work-card,.tile,.step):hover::after{opacity:1}
 }
 
+/* ---------- курсор-кольцо (только мышь; системный курсор не прячем) ---------- */
+.cursor{position:fixed;left:0;top:0;z-index:90;width:0;height:0;pointer-events:none;opacity:0;will-change:transform;transition:opacity var(--dur-2) var(--ease)}
+.cursor.is-on{opacity:1}
+.cursor::before{content:"";position:absolute;left:-15px;top:-15px;width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(83,64,212,.5);background:rgba(106,85,232,0);transition:transform var(--dur-2) var(--ease),background-color var(--dur-2) var(--ease),border-color var(--dur-2) var(--ease)}
+.cursor.is-hot::before{transform:scale(1.6);background-color:rgba(106,85,232,.08);border-color:rgba(83,64,212,.28)}
+.cursor.is-down::before{transform:scale(.8)}
+.cursor.is-hot.is-down::before{transform:scale(1.35)}
+.cursor.is-text,.is-locked .cursor{opacity:0}
+/* смена языка: текст гаснет и проявляется */
+.i18n-fade{transition:opacity 120ms var(--ease)!important}
+.i18n-out{opacity:0!important}
+
 /* ---------- глубина при прокрутке (scroll-driven animations; где их нет — всё статично) ---------- */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
