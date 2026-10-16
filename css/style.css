@@ -128,26 +128,35 @@ p{text-wrap:pretty}
 .hero__h1{margin-top:12px}
 .hero__title{display:block;font-size:clamp(58px,9.4vw,116px);line-height:.92;letter-spacing:-.05em;font-weight:700}
 .hero__sub{display:block;margin-top:14px;font-size:clamp(26px,3.5vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:650;color:var(--acc-ink);background:linear-gradient(95deg,#5A45E3 8%,#7864F2 92%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+/* маска строки/слова: текст выезжает снизу из-под невидимой кромки; поля с отрицательными отступами не режут выносные элементы и не меняют раскладку */
+.mask,.w{display:inline-block;vertical-align:top;overflow:hidden;padding:.12em .08em .18em;margin:-.12em -.08em -.18em}
+.mask>span,.w__i{display:inline-block}
+.hero__sub.is-split{background:none}
+/* у каждого слова свой кусок общего градиента (размер и сдвиг ставит скрипт): background-clip:text не видит сдвинутые слова */
+.hero__sub .w__i{background:linear-gradient(95deg,#5A45E3 8%,#7864F2 92%) 0 0/100% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .hero__lead{margin-top:20px;max-width:31em;font-size:clamp(16px,1.35vw,18px);color:var(--ink-2)}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hero__stack{margin-top:36px}
 .hero__stack small{display:block;margin-bottom:10px;font-size:13px;color:var(--ink-3)}
 .wordmarks{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:17px;font-weight:650;letter-spacing:-.02em;color:var(--ink-3)}
 
-.hero__visual{--mx:0;--my:0;position:relative;width:100%;max-width:560px;margin-inline:auto;aspect-ratio:1/1;container-type:inline-size}
-.frame{position:absolute;inset:0;border-radius:15%;border:1px solid rgba(255,255,255,.95);background:linear-gradient(160deg,rgba(255,255,255,.74),rgba(255,255,255,.16));box-shadow:0 40px 90px -42px rgba(80,60,200,.55),inset 0 0 0 10px rgba(255,255,255,.2)}
-.glow{position:absolute;inset:14% 10% 6% 12%;border-radius:50%;background:radial-gradient(closest-side,rgba(138,118,255,.6),rgba(138,118,255,0));filter:blur(26px)}
-.dev-browser,.dev-phone,.chip-card,.orb-mini{transition:translate .3s var(--ease)}
-.dev-browser{position:absolute;left:7%;top:11%;width:80%;border-radius:4% / 5%;background:#fff;overflow:hidden;rotate:-2deg;box-shadow:0 32px 60px -28px rgba(40,30,120,.6),0 0 0 1px rgba(30,20,90,.06);translate:calc(var(--mx)*-8px) calc(var(--my)*-6px)}
+/* сцена: слои стоят на разной глубине (translateZ), курсор наклоняет всю сцену; scale компенсирует перспективу, чтобы в покое композиция не менялась */
+.hero__visual{--mx:0;--my:0;position:relative;width:100%;max-width:560px;margin-inline:auto;aspect-ratio:1/1;container-type:inline-size;perspective:1400px}
+.stage__tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(calc(var(--my) * -7deg)) rotateY(calc(var(--mx) * 9deg))}
+.frame{position:absolute;inset:0;border-radius:15%;border:1px solid rgba(255,255,255,.95);background:linear-gradient(160deg,rgba(255,255,255,.74),rgba(255,255,255,.16));box-shadow:0 40px 90px -42px rgba(80,60,200,.55),inset 0 0 0 10px rgba(255,255,255,.2);transform:translateZ(-40px) scale(1.029)}
+.glow{position:absolute;inset:6% 2% -2% 4%;border-radius:50%;background:radial-gradient(closest-side,rgba(138,118,255,.5),rgba(138,118,255,.22) 50%,rgba(138,118,255,0));transform:translateZ(-60px) scale(1.043)}
+.dev-browser{position:absolute;left:7%;top:11%;width:80%;border-radius:4% / 5%;background:#fff;overflow:hidden;rotate:-2deg;box-shadow:0 32px 60px -28px rgba(40,30,120,.6),0 0 0 1px rgba(30,20,90,.06)}
 .dev-browser__bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:#F5F4FA;border-bottom:1px solid rgba(30,20,90,.06)}
 .dev-browser__bar i{width:9px;height:9px;border-radius:50%;background:#D9D6E8}
 .dev-browser__url{margin-left:10px;max-width:68%;padding:3px 12px;border-radius:999px;background:#fff;font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dev-browser img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top}
-.dev-phone{position:absolute;right:3%;bottom:6%;width:34%;aspect-ratio:9/17.6;padding:2.4%;border-radius:15% / 7.6%;rotate:3deg;background:linear-gradient(145deg,#2c2b3d,#0b0b12);box-shadow:0 40px 70px -26px rgba(30,20,100,.75),inset 0 0 0 1.5px rgba(255,255,255,.18);translate:calc(var(--mx)*12px) calc(var(--my)*10px)}
+.dev-phone{position:absolute;right:3%;bottom:6%;width:34%;aspect-ratio:9/17.6;padding:2.4%;border-radius:15% / 7.6%;rotate:3deg;overflow:hidden;background:linear-gradient(145deg,#2c2b3d,#0b0b12);box-shadow:0 40px 70px -26px rgba(52,34,150,.75),inset 0 0 0 1.5px rgba(255,255,255,.18);transform:translateZ(46px) scale(.967)}
 .dev-phone img{width:100%;height:100%;object-fit:cover;border-radius:12% / 6%}
-.chip-card{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;animation:floaty 7s ease-in-out infinite alternate}
-.chip-card--stat{top:4%;right:-3%;translate:calc(var(--mx)*-14px) calc(var(--my)*-10px)}
-.chip-card--flow{left:-3%;bottom:7%;display:block;width:clamp(176px,46%,236px);animation-delay:-3s;translate:calc(var(--mx)*10px) calc(var(--my)*8px)}
+/* блик: светлая полоса скользит по экранам вслед за наклоном */
+.dev-browser::after,.dev-phone::after{content:"";position:absolute;inset:0 -70%;pointer-events:none;background:linear-gradient(105deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.34) 48%,rgba(255,255,255,0) 58%);opacity:0;transform:translateX(calc(var(--mx) * 24%));transition:opacity var(--dur-3) var(--ease)}
+.chip-card{position:absolute;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px}
+.chip-card--stat{top:4%;right:-3%;transform:translateZ(80px) scale(.943)}
+.chip-card--flow{left:-3%;bottom:7%;display:block;width:clamp(176px,46%,236px);transform:translateZ(64px) scale(.954)}
 .chip-card__n{font-size:36px;font-weight:700;letter-spacing:-.04em;line-height:1}
 .chip-card b{display:block;font-size:14px;font-weight:650;line-height:1.2}
 .chip-card small{display:block;font-size:12px;color:var(--ink-2);line-height:1.3}
@@ -156,7 +165,7 @@ p{text-wrap:pretty}
 .flow li::before{content:"";z-index:1;width:12px;height:12px;border-radius:50%;background:linear-gradient(145deg,#8E7CFF,#5A45E3);box-shadow:0 0 0 3px rgba(106,85,232,.18)}
 .flow li:not(:last-child)::after{content:"";position:absolute;top:5px;left:calc(50% + 7px);width:calc(100% - 14px);height:2px;border-radius:2px;background:linear-gradient(90deg,#8E7CFF,#CFC7FF)}
 .flow li:last-child::before{animation:pulse2 2.6s infinite}
-.orb-mini{position:absolute;left:-4%;top:40%;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--acc-ink);translate:calc(var(--mx)*-6px) calc(var(--my)*-6px)}
+.orb-mini{position:absolute;left:-4%;top:40%;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--acc-ink);transform:translateZ(100px) scale(.929)}
 .orb-mini .ico{width:24px;height:24px}
 
 /* ---------- about ---------- */
@@ -335,15 +344,52 @@ textarea.input{min-height:120px;resize:vertical}
 
 /* ---------- motion ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes floaty{from{transform:translateY(-5px)}to{transform:translateY(7px)}}
+@keyframes mask-up{from{transform:translateY(110%)}}
+@keyframes show{to{opacity:1}}
+@keyframes in-rise{from{opacity:0;translate:0 44px}}
+@keyframes in-pop{from{opacity:0;scale:.86}}
+@keyframes float-a{from{translate:0 -6px}to{translate:0 8px}}
+@keyframes float-b{from{translate:0 7px}to{translate:0 -9px}}
+@keyframes float-c{from{translate:-3px -5px}to{translate:4px 6px}}
+@keyframes au-a{to{transform:translate3d(16vw,12vh,0) scale(1.2)}}
+@keyframes au-b{to{transform:translate3d(-20vw,16vh,0) scale(.85)}}
+@keyframes au-c{to{transform:translate3d(-12vw,-18vh,0) scale(1.25)}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(31,168,90,.45)}70%{box-shadow:0 0 0 8px rgba(31,168,90,0)}100%{box-shadow:0 0 0 0 rgba(31,168,90,0)}}
 @keyframes pulse2{0%{box-shadow:0 0 0 3px rgba(106,85,232,.18)}70%{box-shadow:0 0 0 9px rgba(106,85,232,0)}100%{box-shadow:0 0 0 3px rgba(106,85,232,0)}}
 @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .js [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity var(--dur-3) var(--ease),transform var(--dur-3) var(--ease);transition-delay:var(--d,0ms)}
 .js [data-reveal].is-in{opacity:1;transform:none}
-.js .hero__copy>*{animation:rise .8s var(--ease) both}
-.hero__copy>:nth-child(2){animation-delay:.08s}.hero__copy>:nth-child(3){animation-delay:.14s}.hero__copy>:nth-child(4){animation-delay:.2s}.hero__copy>:nth-child(5){animation-delay:.26s}.hero__copy>:nth-child(6){animation-delay:.32s}.hero__copy>:nth-child(7){animation-delay:.4s}
+/* hero: оркестр загрузки. Заголовок выезжает из маски (слова подзаголовка по очереди), сцена собирается слоями */
+.js .hero__copy>*{animation:rise var(--dur-3) var(--ease) both}
+.js .hero__copy>.hero__h1{animation:none}
+.hero__copy>:nth-child(2){animation-delay:.06s}.hero__copy>:nth-child(4){animation-delay:.24s}.hero__copy>:nth-child(5){animation-delay:.34s}.hero__copy>:nth-child(6){animation-delay:.44s}
+.js .hero__title .mask>span{animation:mask-up var(--dur-3) var(--ease) .04s both}
+.js .hero__sub{opacity:0;animation:show 0s 2.5s forwards} /* страховка на случай, если скрипт не загрузится */
+.js .hero__sub.is-ready{opacity:1;animation:none}
+.hero__sub .w__i{animation:mask-up var(--dur-3) var(--ease) both;animation-delay:calc(.14s + var(--wi,0) * 70ms)}
+.hero__sub.no-intro .w__i{animation:none}
+.js .frame{animation:in-pop 1s var(--ease) .06s both}
+.js .glow{animation:fade 1.4s var(--ease) .2s both}
+.js .dev-browser{animation:in-rise .95s var(--ease) .16s both}
+.js .dev-phone{animation:in-rise 1.05s var(--ease) .28s both}
+.js .chip-card--stat{animation:in-pop .8s var(--ease) .52s both,float-a 6s var(--ease-io) 1.4s infinite alternate both}
+.js .chip-card--flow{animation:in-pop .8s var(--ease) .62s both,float-b 8s var(--ease-io) 1.4s infinite alternate both}
+.js .orb-mini{animation:in-pop .8s var(--ease) .72s both,float-c 5s var(--ease-io) 1.4s infinite alternate both}
+.lite .chip-card,.lite .orb-mini{animation-iteration-count:1,1}
+@media (hover:hover) and (pointer:fine){.hero:hover .dev-browser::after,.hero:hover .dev-phone::after{opacity:1}}
+/* аврора: три мягких пятна в цветах работ (фиолетовый бренда, мятный Noverim, розовый Melty); движутся только при мыши и не на слабых устройствах */
+.aurora{position:absolute;left:-10%;right:-10%;top:-25vh;height:130vh}
+.aurora i{position:absolute;width:64vmax;aspect-ratio:1;border-radius:50%}
+.aurora i:nth-child(1){left:-6%;top:-14%;background:radial-gradient(closest-side,rgba(142,124,255,.42),rgba(142,124,255,0))}
+.aurora i:nth-child(2){right:-10%;top:-8%;background:radial-gradient(closest-side,rgba(96,196,160,.3),rgba(96,196,160,0))}
+.aurora i:nth-child(3){left:26%;top:18%;width:52vmax;background:radial-gradient(closest-side,rgba(255,140,178,.26),rgba(255,140,178,0))}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  html:not(.lite) .aurora i{will-change:transform;animation:au-a 26s var(--ease-io) infinite alternate}
+  html:not(.lite) .aurora i:nth-child(2){animation-name:au-b;animation-duration:32s}
+  html:not(.lite) .aurora i:nth-child(3){animation-name:au-c;animation-duration:38s}
+  .aurora-off .aurora i,.is-locked .aurora i{animation-play-state:paused}
+}
 
 /* ---------- responsive ---------- */
 @media (max-width:1210px){

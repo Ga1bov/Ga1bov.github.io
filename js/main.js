@@ -7,6 +7,7 @@
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const root = document.documentElement;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches; // мышь: наклон, подсветка, магнит, курсор
   const tg = String(SITE.telegram || '').replace(/^@/, '').trim();
   const viaApi = Boolean(SITE.endpoint);
 
@@ -28,7 +29,7 @@
   const dyn = (k) => (D.dyn[lang] && D.dyn[lang][k]) || D.dyn.ru[k] || k;
   const pick = (key, fallback) => (lang === 'en' && D.en[key] != null ? D.en[key] : fallback);
 
-  function setLang(next, persist) {
+  function setLang(next, persist, intro) {
     lang = next === 'en' ? 'en' : 'ru';
     orig.forEach((o) => {
       if ('t' in o) o.el.textContent = pick(o.el.getAttribute('data-i18n'), o.t);
@@ -39,9 +40,32 @@
     root.lang = lang;
     $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
     if (persist) { try { localStorage.setItem('gb-lang', lang); } catch (e) { /* private mode */ } }
+    splitHero(intro);
     renderSent();
     clearErrors();
   }
+
+  /* ---------- hero: подзаголовок по словам (маска + сдвиг), градиент делится между словами ---------- */
+  const sub = $('.hero__sub');
+  function splitHero(intro) {
+    sub.classList.add('is-ready');
+    if (reduce || /<(?!br\b)/i.test(sub.innerHTML)) return; // только текст и <br>
+    let i = 0;
+    sub.innerHTML = sub.innerHTML.split(/<br\s*\/?>/i).map((line) => line.trim().split(/\s+/)
+      .map((w) => '<span class="w"><span class="w__i" style="--wi:' + (i++) + '">' + w + '</span></span>').join(' ')).join('<br>');
+    sub.classList.add('is-split');
+    sub.classList.toggle('no-intro', !intro);
+    paintSub();
+  }
+  function paintSub() {
+    if (!sub.classList.contains('is-split')) return;
+    const r = sub.getBoundingClientRect(); const ws = $$('.w__i', sub);
+    const xs = ws.map((w) => w.getBoundingClientRect().left);
+    ws.forEach((w, i) => { w.style.backgroundSize = r.width + 'px 100%'; w.style.backgroundPosition = (r.left - xs[i]) + 'px 0'; });
+  }
+  let rsT = 0;
+  addEventListener('resize', () => { clearTimeout(rsT); rsT = setTimeout(paintSub, 150); });
+  if (document.fonts) document.fonts.ready.then(paintSub);
   $$('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang, true)));
 
   /* ---------- навигация ---------- */
@@ -90,20 +114,26 @@
     $$('[data-reveal]').forEach((el) => el.classList.add('is-in'));
   }
 
-  /* ---------- hero: лёгкий параллакс устройств ---------- */
-  const stage = $('#stage');
-  if (stage && !reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    let raf = 0;
-    const set = (x, y) => { stage.style.setProperty('--mx', x); stage.style.setProperty('--my', y); };
-    stage.addEventListener('pointermove', (e) => {
+  /* ---------- hero: 3D-наклон сцены за курсором (плавный догон, только transform) ---------- */
+  const stage = $('#stage'); const hero = $('#top');
+  if (stage && fine && !reduce) {
+    const clamp = (v) => Math.max(-1, Math.min(1, v));
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, last = 0;
+    const step = (t) => {
+      const k = 1 - Math.pow(0.86, Math.max(1, t - last) / 16.7); last = t;
+      cx += (tx - cx) * k; cy += (ty - cy) * k;
+      stage.style.setProperty('--mx', cx.toFixed(4)); stage.style.setProperty('--my', cy.toFixed(4));
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(step) : 0;
+    };
+    const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } };
+    hero.addEventListener('pointermove', (e) => {
       const r = stage.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * 2 - 1;
-      const y = ((e.clientY - r.top) / r.height) * 2 - 1;
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => set(x.toFixed(3), y.toFixed(3)));
+      tx = clamp(((e.clientX - r.left) / r.width) * 2 - 1); ty = clamp(((e.clientY - r.top) / r.height) * 2 - 1); kick();
     });
-    stage.addEventListener('pointerleave', () => set(0, 0));
+    hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
   }
+  // аврора за стеклом движется, только пока hero на экране
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => root.classList.toggle('aurora-off', !e.isIntersecting)).observe(hero);
 
   /* ---------- контакты и доступность из config.js ---------- */
   if (!SITE.available) $('#avail').hidden = true;
@@ -120,7 +150,7 @@
   }
 
   /* ---------- кейсы (native <dialog>) ---------- */
-  const lock = (on) => { root.style.overflow = on ? 'hidden' : ''; };
+  const lock = (on) => { root.style.overflow = on ? 'hidden' : ''; root.classList.toggle('is-locked', on); };
   $$('[data-case]').forEach((b) => b.addEventListener('click', () => {
     const d = $('#case-' + b.dataset.case);
     if (d && typeof d.showModal === 'function') { d.showModal(); lock(true); }
@@ -241,5 +271,5 @@
   /* ---------- старт ---------- */
   $('#year').textContent = new Date().getFullYear();
   let saved = ''; try { saved = localStorage.getItem('gb-lang') || ''; } catch (e) { /* private mode */ }
-  setLang((new URLSearchParams(location.search).get('lang') || saved) === 'en' ? 'en' : 'ru');
+  setLang((new URLSearchParams(location.search).get('lang') || saved) === 'en' ? 'en' : 'ru', false, true);
 })();
