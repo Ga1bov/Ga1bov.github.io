@@ -11,6 +11,48 @@
   const tg = String(SITE.telegram || '').replace(/^@/, '').trim();
   const viaApi = Boolean(SITE.endpoint);
 
+  /* ---------- кейсы: галереи с кнопками и счётчиком, соседние проекты внизу окна.
+     Строится до снятия текстов для i18n: скопированные названия переводятся вместе со страницей ---------- */
+  const caseCards = $$('[data-case]');
+  $$('.strip').forEach((s) => {
+    const g = document.createElement('div'); g.className = 'gal';
+    s.before(g); g.appendChild(s);
+    const bar = document.createElement('div'); bar.className = 'gal__bar';
+    bar.innerHTML = '<button type="button" class="round gal__prev" data-dyn-label="gal.prev"><svg class="ico" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>'
+      + '<span class="gal__n" aria-hidden="true"></span>'
+      + '<button type="button" class="round gal__next" data-dyn-label="gal.next"><svg class="ico" aria-hidden="true"><use href="#i-arrow-r"/></svg></button>';
+    g.appendChild(bar);
+    const imgs = $$('img', s); const n = $('.gal__n', bar); const prev = $('.gal__prev', bar); const next = $('.gal__next', bar);
+    const stepW = () => (imgs.length > 1 ? imgs[1].offsetLeft - imgs[0].offsetLeft : s.clientWidth) || 1;
+    g.upd = () => {
+      const max = s.scrollWidth - s.clientWidth;
+      n.textContent = (s.scrollLeft >= max - 2 ? imgs.length : Math.round(s.scrollLeft / stepW()) + 1) + ' / ' + imgs.length;
+      prev.disabled = s.scrollLeft <= 2; next.disabled = s.scrollLeft >= max - 2;
+    };
+    prev.addEventListener('click', () => s.scrollBy({ left: -stepW() }));
+    next.addEventListener('click', () => s.scrollBy({ left: stepW() }));
+    let q = 0;
+    s.addEventListener('scroll', () => { if (!q) q = requestAnimationFrame(() => { q = 0; g.upd(); }); }, { passive: true });
+    imgs.forEach((im) => im.addEventListener('load', g.upd));
+  });
+  caseCards.forEach((card, i) => {
+    const d = $('#case-' + card.dataset.case); if (!d) return;
+    const nav = document.createElement('nav'); nav.className = 'case__pager'; nav.dataset.dynLabel = 'case.more';
+    [[-1, 'prev'], [1, 'next']].forEach(([k, dir]) => {
+      const other = caseCards[(i + k + caseCards.length) % caseCards.length];
+      const b = document.createElement('button'); b.type = 'button';
+      b.className = 'pager__a pager__a--' + dir; b.dataset.goto = other.dataset.case; b.dataset.dir = dir;
+      const tone = Array.from(other.querySelector('.thumb').classList).find((c) => c.indexOf('thumb--') === 0) || '';
+      b.innerHTML = '<span class="pager__img ' + tone + '" aria-hidden="true"></span><span class="pager__t"><small data-dyn="case.' + dir + '"></small></span>';
+      const im = other.querySelector('.thumb img').cloneNode(); im.alt = ''; im.loading = 'lazy';
+      b.firstChild.appendChild(im);
+      const t = other.querySelector('.work-card__title').cloneNode(true); t.className = 'pager__title';
+      b.lastChild.appendChild(t);
+      nav.appendChild(b);
+    });
+    $('.case__box', d).appendChild(nav);
+  });
+
   /* ---------- i18n: русские оригиналы берём из DOM, английские — из i18n.js ---------- */
   let lang = 'ru';
   const orig = [];
@@ -37,6 +79,7 @@
       if (o.a) o.a.forEach((a) => o.el.setAttribute(a.at, pick(a.key, a.ru)));
     });
     $$('[data-dyn]').forEach((el) => { el.textContent = dyn(el.dataset.dyn); });
+    $$('[data-dyn-label]').forEach((el) => el.setAttribute('aria-label', dyn(el.dataset.dynLabel)));
     root.lang = lang;
     $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
     if (persist) { try { localStorage.setItem('gb-lang', lang); } catch (e) { /* private mode */ } }
@@ -202,11 +245,16 @@
   const stage = $('#stage'); const hero = $('#top');
   if (stage && fine && !reduce) {
     const clamp = (v) => Math.max(-1, Math.min(1, v));
+    const tilt = $('.stage__tilt', stage);
+    const glares = $$('.dev-browser,.dev-phone', stage).map((d) => {
+      const g = document.createElement('i'); g.className = 'glare'; g.setAttribute('aria-hidden', 'true'); d.appendChild(g); return g;
+    });
     let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, last = 0;
     const step = (t) => {
       const k = 1 - Math.pow(0.86, Math.max(1, t - last) / 16.7); last = t;
       cx += (tx - cx) * k; cy += (ty - cy) * k;
-      stage.style.setProperty('--mx', cx.toFixed(4)); stage.style.setProperty('--my', cy.toFixed(4));
+      tilt.style.transform = 'rotateX(' + (cy * -7).toFixed(3) + 'deg) rotateY(' + (cx * 9).toFixed(3) + 'deg)';
+      glares.forEach((g) => { g.style.transform = 'translateX(' + (cx * 24).toFixed(2) + '%)'; });
       raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(step) : 0;
     };
     const kick = () => { if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); } };
@@ -268,15 +316,63 @@
     const a = $('#ch-link'); a.href = 'https://t.me/' + ch; a.textContent = '@' + ch;
   }
 
-  /* ---------- кейсы (native <dialog>) ---------- */
+  /* ---------- кейсы (native <dialog>): карточка «вырастает» в окно через View Transitions, без поддержки — прежний pop ---------- */
   const lock = (on) => { root.style.overflow = on ? 'hidden' : ''; root.classList.toggle('is-locked', on); };
-  $$('[data-case]').forEach((b) => b.addEventListener('click', () => {
-    const d = $('#case-' + b.dataset.case);
-    if (d && typeof d.showModal === 'function') { d.showModal(); lock(true); }
-  }));
+  const vtOK = typeof document.startViewTransition === 'function' && !reduce && !root.classList.contains('lite');
+  const name = (pairs) => pairs.forEach(([el, n]) => { if (el) el.style.viewTransitionName = n; });
+  // класс .vt гасит pop окна на всё время, пока оно открыто (снимается в close), иначе pop сыграет второй раз после перехода
+  const morph = (dlgs, update, done) => {
+    dlgs.forEach((d) => d.classList.add('vt'));
+    document.startViewTransition(update).finished.finally(done);
+  };
+  const cardOf = (d) => $('[data-case="' + d.id.slice(5) + '"]');
+  const show = (d) => { d.showModal(); lock(true); $('.case__box', d).scrollTop = 0; $$('.gal', d).forEach((g) => g.upd()); };
+  function openCase(card) {
+    const d = $('#case-' + card.dataset.case);
+    if (!d || typeof d.showModal !== 'function') return;
+    if (!vtOK) return show(d);
+    const box = $('.case__box', d); const h = $('.case__head h2', d); const t = $('.work-card__title', card);
+    name([[card, 'case-box'], [t, 'case-title']]);
+    morph([d], () => { name([[card, ''], [t, ''], [box, 'case-box'], [h, 'case-title']]); show(d); }, () => name([[box, ''], [h, '']]));
+  }
+  function closeCase(d, animate) {
+    if (!d.open) return;
+    const card = cardOf(d); const r = card && card.getBoundingClientRect();
+    if (!vtOK || !animate || !r || r.bottom < 0 || r.top > innerHeight) return d.close();
+    const box = $('.case__box', d); const h = $('.case__head h2', d); const t = $('.work-card__title', card);
+    root.dataset.vt = 'close'; name([[box, 'case-box'], [h, 'case-title']]);
+    morph([d], () => { name([[box, ''], [h, ''], [card, 'case-box'], [t, 'case-title']]); d.close(); }, () => { name([[card, ''], [t, '']]); delete root.dataset.vt; });
+  }
+  function switchCase(from, id, dir) {
+    const to = $('#case-' + id); if (!to) return;
+    const run = () => { from.close(); show(to); };
+    if (!vtOK) return run();
+    const a = $('.case__box', from); const b = $('.case__box', to);
+    root.dataset.vt = dir; name([[a, 'case-box']]);
+    morph([from, to], () => { name([[a, ''], [b, 'case-box']]); run(); }, () => { name([[b, '']]); delete root.dataset.vt; });
+  }
+  // картинки кейса подгружаем заранее (наведение, фокус, касание): окно открывается уже с кадрами, переход не ждёт декодирования
+  const warmCase = (id) => $$('#case-' + id + ' img[loading="lazy"]').forEach((im) => { im.loading = 'eager'; });
+  const onIntent = (el, fn) => ['pointerenter', 'focus', 'touchstart'].forEach((t) => el.addEventListener(t, fn, { once: true, passive: true }));
+  caseCards.forEach((b) => { b.addEventListener('click', () => openCase(b)); onIntent(b, () => warmCase(b.dataset.case)); });
+  $$('.pager__a').forEach((b) => onIntent(b, () => warmCase(b.dataset.goto)));
   $$('dialog.case').forEach((d) => {
-    d.addEventListener('click', (e) => { if (e.target === d || e.target.closest('[data-close]')) d.close(); });
-    d.addEventListener('close', () => lock(false));
+    d.addEventListener('click', (e) => {
+      const go = e.target.closest('[data-goto]');
+      if (go) return switchCase(d, go.dataset.goto, go.dataset.dir);
+      // фон и крестик — с анимацией; кнопки, ведущие к брифу, закрывают сразу (дальше прокрутка)
+      if (e.target === d) closeCase(d, true);
+      else if (e.target.closest('[data-close]')) closeCase(d, Boolean(e.target.closest('.round')));
+    });
+    d.addEventListener('cancel', (e) => { if (e.cancelable && vtOK) { e.preventDefault(); closeCase(d, true); } });
+    d.addEventListener('close', () => {
+      d.classList.remove('vt');
+      if ($('dialog.case[open]')) return; // переход к соседнему кейсу
+      lock(false);
+      // фокус — на карточку того кейса, который закрыли (после переходов между кейсами браузер вернул бы его на первый)
+      const card = cardOf(d);
+      if (card && document.activeElement !== card) card.focus({ preventScroll: true });
+    });
   });
 
   /* ---------- услуги -> бриф ---------- */

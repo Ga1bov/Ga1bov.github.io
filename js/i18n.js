@@ -179,7 +179,9 @@ window.I18N = {
       'sent.fail.p': 'Не удалось отправить автоматически. Скопируйте заявку и отправьте её вручную.',
       'tpl.head': '👋 Здравствуйте! Заявка с сайта Gaibov.',
       'tpl.type': '📦 Тип проекта', 'tpl.budget': '💰 Бюджет', 'tpl.time': '⏳ Сроки',
-      'tpl.msg': '📝 О проекте', 'tpl.contact': '👤 Контакт', 'tpl.none': 'не указано'
+      'tpl.msg': '📝 О проекте', 'tpl.contact': '👤 Контакт', 'tpl.none': 'не указано',
+      'gal.prev': 'Предыдущий кадр', 'gal.next': 'Следующий кадр',
+      'case.prev': 'Предыдущий проект', 'case.next': 'Следующий проект', 'case.more': 'Другие проекты'
     },
     en: {
       'btn.open': 'Open Telegram', 'btn.copy': 'Copy', 'btn.copied': 'Copied', 'btn.edit': 'Edit brief', 'btn.new': 'New brief',
@@ -198,7 +200,9 @@ window.I18N = {
       'sent.fail.p': "Couldn't send automatically. Please copy the brief and send it manually.",
       'tpl.head': '👋 Hello! A project brief from the Gaibov website.',
       'tpl.type': '📦 Project type', 'tpl.budget': '💰 Budget', 'tpl.time': '⏳ Timeline',
-      'tpl.msg': '📝 About the project', 'tpl.contact': '👤 Contact', 'tpl.none': 'not specified'
+      'tpl.msg': '📝 About the project', 'tpl.contact': '👤 Contact', 'tpl.none': 'not specified',
+      'gal.prev': 'Previous image', 'gal.next': 'Next image',
+      'case.prev': 'Previous project', 'case.next': 'Next project', 'case.more': 'More projects'
     }
   }
 };
