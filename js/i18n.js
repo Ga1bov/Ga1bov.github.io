@@ -164,6 +164,7 @@ window.I18N = {
   dyn: {
     ru: {
       'btn.open': 'Открыть Telegram', 'btn.copy': 'Скопировать', 'btn.copied': 'Скопировано', 'btn.edit': 'Изменить заявку', 'btn.new': 'Новая заявка',
+      'btn.sending': 'Отправляю…', 'btn.sent': 'Отправлено',
       'lbl.contact.opt': 'Как с вами связаться (необязательно)', 'lbl.contact.req': 'Как с вами связаться',
       'note.tg': 'Заявка откроется в Telegram с готовым текстом — останется нажать «Отправить».',
       'note.ep': 'Заявка придёт мне в Telegram, данные нужны только для ответа. Отвечу по указанному контакту.',
@@ -185,6 +186,7 @@ window.I18N = {
     },
     en: {
       'btn.open': 'Open Telegram', 'btn.copy': 'Copy', 'btn.copied': 'Copied', 'btn.edit': 'Edit brief', 'btn.new': 'New brief',
+      'btn.sending': 'Sending…', 'btn.sent': 'Sent',
       'lbl.contact.opt': 'How to reach you (optional)', 'lbl.contact.req': 'How to reach you',
       'note.tg': 'The brief opens in Telegram with the text ready — just press Send.',
       'note.ep': 'The brief reaches me in Telegram; your details are used only to reply. I will answer via the contact you leave.',

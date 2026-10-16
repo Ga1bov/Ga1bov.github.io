@@ -449,20 +449,28 @@
     ].join('\n');
   }
 
+  const typeChips = $('#err-type').previousElementSibling;
+  // неверное поле коротко «встряхивается» (transform), подсветка — в CSS по aria-invalid / .is-invalid
+  const shake = (el) => {
+    if (reduce || !el.animate) return;
+    el.animate([{ transform: 'none' }, { transform: 'translateX(-7px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(2px)' }, { transform: 'none' }],
+      { duration: 420, easing: 'cubic-bezier(.36,.07,.19,.97)' });
+  };
   function clearErrors() {
     ['err-type', 'err-msg', 'err-contact'].forEach((id) => { $('#' + id).textContent = ''; });
-    msgEl.removeAttribute('aria-invalid'); contactEl.removeAttribute('aria-invalid');
+    msgEl.removeAttribute('aria-invalid'); contactEl.removeAttribute('aria-invalid'); typeChips.classList.remove('is-invalid');
   }
   function validate() {
     clearErrors();
-    let first = null;
-    if (!form.elements.type.value) { $('#err-type').textContent = dyn('err.type'); first = form.querySelector('input[name="type"]'); }
-    if (msgEl.value.trim().length < 10) { $('#err-msg').textContent = dyn('err.msg'); msgEl.setAttribute('aria-invalid', 'true'); first = first || msgEl; }
-    if (viaApi && contactEl.value.trim().length < 3) { $('#err-contact').textContent = dyn('err.contact'); contactEl.setAttribute('aria-invalid', 'true'); first = first || contactEl; }
-    if (first) first.focus();
-    return !first;
+    const bad = [];
+    if (!form.elements.type.value) { $('#err-type').textContent = dyn('err.type'); typeChips.classList.add('is-invalid'); bad.push([typeChips, form.querySelector('input[name="type"]')]); }
+    if (msgEl.value.trim().length < 10) { $('#err-msg').textContent = dyn('err.msg'); msgEl.setAttribute('aria-invalid', 'true'); bad.push([msgEl, msgEl]); }
+    if (viaApi && contactEl.value.trim().length < 3) { $('#err-contact').textContent = dyn('err.contact'); contactEl.setAttribute('aria-invalid', 'true'); bad.push([contactEl, contactEl]); }
+    bad.forEach(([el]) => shake(el));
+    if (bad.length) bad[0][1].focus();
+    return !bad.length;
   }
-  $$('input[name="type"]').forEach((r) => r.addEventListener('change', () => { $('#err-type').textContent = ''; }));
+  $$('input[name="type"]').forEach((r) => r.addEventListener('change', () => { $('#err-type').textContent = ''; typeChips.classList.remove('is-invalid'); }));
   msgEl.addEventListener('input', () => { if (msgEl.value.trim().length >= 10) { $('#err-msg').textContent = ''; msgEl.removeAttribute('aria-invalid'); } });
   contactEl.addEventListener('input', () => { if (contactEl.value.trim().length >= 3) { $('#err-contact').textContent = ''; contactEl.removeAttribute('aria-invalid'); } });
 
@@ -485,13 +493,24 @@
     sent.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
   }
 
+  // состояния кнопки отправки: loading (кольцо) → sent (галочка рисуется); подпись поверх, ширина кнопки не меняется
+  const sendBtn = form.querySelector('[type="submit"]');
+  sendBtn.insertAdjacentHTML('beforeend', '<span class="btn__state" aria-hidden="true"><i class="spin"></i><svg class="ico"><use href="#i-check"/></svg><span data-dyn="btn.sending"></span></span>');
+  const btnState = (s) => {
+    const t = $('.btn__state [data-dyn]', sendBtn);
+    if (s) { t.dataset.dyn = s === 'sent' ? 'btn.sent' : 'btn.sending'; t.textContent = dyn(t.dataset.dyn); sendBtn.dataset.state = s; } else delete sendBtn.dataset.state;
+    form.setAttribute('aria-busy', String(s === 'loading'));
+  };
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validate()) return;
     const text = buildText();
-    const btn = form.querySelector('[type="submit"]'); btn.disabled = true;
+    const btn = sendBtn; btn.disabled = true;
     let mode = 'copy';
     if (viaApi) {
+      btnState('loading');
       try {
         // text/plain: «простой» CORS-запрос без preflight; Worker сам разбирает JSON.
         const r = await fetch(SITE.endpoint, {
@@ -507,12 +526,13 @@
         if (!r.ok) throw new Error('HTTP ' + r.status);
         mode = 'ok';
       } catch (err) { mode = 'fail'; }
+      if (mode === 'ok' && !reduce) { btnState('sent'); await wait(420); } // галочка в кнопке успевает прорисоваться
     }
     const url = tg ? 'https://t.me/' + tg + '?text=' + encodeURIComponent(text) : '';
     if (mode !== 'ok' && tg) mode = 'tg';
     showSent(mode, text, url);
     if (mode === 'tg') window.open(url, '_blank', 'noopener');
-    btn.disabled = false;
+    btn.disabled = false; btnState('');
   });
 
   $('#sent-copy').addEventListener('click', async () => {
@@ -525,6 +545,7 @@
     if (state && state.mode === 'ok') form.reset();
     clearErrors();
     sent.hidden = true; form.hidden = false; msgEl.focus();
+    if (!reduce && form.animate) form.animate([{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,.9,.3,1)' });
   });
 
   /* ---------- старт ---------- */
