@@ -81,7 +81,7 @@ p{text-wrap:pretty}
 .btn--ghost{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);box-shadow:var(--shadow-1)}
 .btn:active{transform:scale(.97)}
 .round{position:relative;overflow:hidden;width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:var(--shadow-1);transition:background-color var(--dur-2) var(--ease),color var(--dur-2) var(--ease),transform var(--dur-1) var(--ease)}
-.round .ico{width:18px;height:18px}
+.round .ico{width:18px;height:18px;transition:transform var(--dur-2) var(--ease)}
 button.round:active{transform:scale(.92)}
 /* «волна» нажатия: круг из точки касания, слой .fx добавляет скрипт */
 .fx{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
@@ -274,7 +274,7 @@ button.round:active{transform:scale(.92)}
   .work-card:hover .ph--l{transform:translate(-6px,-8px)}.work-card:hover .ph--r{transform:translate(6px,-12px) scale(1.02)}
   .work-card:hover .sl--1{transform:translate(-8px,-6px)}.work-card:hover .sl--2{transform:translate(8px,6px)}.work-card:hover .sl--3{transform:translate(0,-8px) scale(1.03)}
   .work-card:hover .round,.svc:hover .round{background:var(--ink);color:#fff}
-  .work-card:hover .round .ico,.svc:hover .round .ico{animation:arrow-swap .55s var(--ease)}
+  .work-card:hover .round .ico,.svc:hover .round .ico{transform:translate(2px,-2px)}
   .svc:hover,.tile:hover{transform:translateY(-4px)}
   .svc:hover .svc__ic{transform:translateY(-3px) rotate(-6deg)}
   .tile:hover .tile__g{transform:translateY(-2px) scale(1.07)}
@@ -462,7 +462,6 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
 @keyframes pop-in{from{opacity:0;transform:scale(.6)}}
 @keyframes halo{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.9)}}
 @keyframes ripple{to{transform:scale(1);opacity:0}}
-@keyframes arrow-swap{0%{transform:none}42%{transform:translate(150%,-150%)}43%{transform:translate(-150%,150%)}100%{transform:none}}
 @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .js [data-reveal]:not(.is-done){opacity:0;transform:translateY(22px);transition:opacity var(--dur-3) var(--ease),transform var(--dur-3) var(--ease);transition-delay:var(--d,0ms)}
