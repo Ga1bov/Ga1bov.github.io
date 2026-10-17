@@ -182,7 +182,8 @@ window.I18N = {
       'tpl.type': '📦 Тип проекта', 'tpl.budget': '💰 Бюджет', 'tpl.time': '⏳ Сроки',
       'tpl.msg': '📝 О проекте', 'tpl.contact': '👤 Контакт', 'tpl.none': 'не указано',
       'gal.prev': 'Предыдущий кадр', 'gal.next': 'Следующий кадр',
-      'case.prev': 'Предыдущий проект', 'case.next': 'Следующий проект', 'case.more': 'Другие проекты'
+      'case.prev': 'Предыдущий проект', 'case.next': 'Следующий проект', 'case.more': 'Другие проекты',
+      'cur.open': 'Открыть'
     },
     en: {
       'btn.open': 'Open Telegram', 'btn.copy': 'Copy', 'btn.copied': 'Copied', 'btn.edit': 'Edit brief', 'btn.new': 'New brief',
@@ -204,7 +205,8 @@ window.I18N = {
       'tpl.type': '📦 Project type', 'tpl.budget': '💰 Budget', 'tpl.time': '⏳ Timeline',
       'tpl.msg': '📝 About the project', 'tpl.contact': '👤 Contact', 'tpl.none': 'not specified',
       'gal.prev': 'Previous image', 'gal.next': 'Next image',
-      'case.prev': 'Previous project', 'case.next': 'Next project', 'case.more': 'More projects'
+      'case.prev': 'Previous project', 'case.next': 'Next project', 'case.more': 'More projects',
+      'cur.open': 'Open'
     }
   }
 };

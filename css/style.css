@@ -510,14 +510,35 @@ html[data-vt=prev]::view-transition-new(case-box){animation:vt-in-l .42s var(--e
   :is(.svc,.work-card,.tile,.step):hover::before,:is(.svc,.work-card,.tile,.step):hover::after{opacity:1}
 }
 
-/* ---------- курсор-кольцо (только мышь; системный курсор не прячем) ---------- */
-.cursor{position:fixed;left:0;top:0;z-index:90;width:0;height:0;pointer-events:none;opacity:0;will-change:transform;transition:opacity var(--dur-2) var(--ease)}
+/* ---------- свой курсор (только мышь): фиолетовая точка — сам указатель (как маркеры списков и точки процесса),
+   стеклянная бусина-линза догоняет её (как стеклянные элементы hero). Системный курсор прячется, только когда свой уже на экране;
+   в полях ввода — обычный текстовый курсор ---------- */
+html.has-cursor,html.has-cursor *,html.has-cursor dialog::backdrop{cursor:none!important}
+html.has-cursor :is(input:not([type=radio]):not([type=checkbox]),textarea,select,[contenteditable]){cursor:auto!important}
+/* сам элемент — popover в верхнем слое (виден и над окнами кейсов); сбрасываем стили popover по умолчанию */
+.cursor{position:fixed;inset:auto;left:0;top:0;width:0;height:0;margin:0;padding:0;border:0;background:none;overflow:visible;pointer-events:none;z-index:90;opacity:0;transition:opacity var(--dur-2) var(--ease);view-transition-name:cursor}
 .cursor.is-on{opacity:1}
-.cursor::before{content:"";position:absolute;left:-15px;top:-15px;width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(83,64,212,.5);background:rgba(106,85,232,0);transition:transform var(--dur-2) var(--ease),background-color var(--dur-2) var(--ease),border-color var(--dur-2) var(--ease)}
-.cursor.is-hot::before{transform:scale(1.6);background-color:rgba(106,85,232,.08);border-color:rgba(83,64,212,.28)}
-.cursor.is-down::before{transform:scale(.8)}
-.cursor.is-hot.is-down::before{transform:scale(1.35)}
-.cursor.is-text,.is-locked .cursor{opacity:0}
+.cursor.is-text{opacity:0}
+.cursor__lens,.cursor__dot{position:absolute;left:0;top:0;border-radius:50%;will-change:transform}
+.cursor__lens{width:40px;height:40px;margin:-20px 0 0 -20px;display:grid;place-items:center}
+.cursor__lens::before{content:"";position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.88),rgba(255,255,255,.28) 54%,rgba(196,184,255,.26));border:1px solid rgba(255,255,255,.95);box-shadow:inset 0 1px 0 #fff,inset 0 -8px 12px -7px rgba(106,85,232,.5),0 0 0 1px rgba(106,85,232,.22),0 10px 22px -10px rgba(60,45,150,.6);-webkit-backdrop-filter:saturate(1.8);backdrop-filter:saturate(1.8);transition:transform var(--dur-2) var(--ease),background var(--dur-2) var(--ease)}
+.cursor__dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:linear-gradient(145deg,#8E7CFF,#5A45E3);box-shadow:0 0 0 1.5px #fff,0 2px 6px rgba(60,45,150,.5);transition:opacity var(--dur-1) var(--ease),scale var(--dur-2) var(--ease)}
+.cursor__txt{position:relative;font-size:12px;font-weight:650;letter-spacing:.01em;color:var(--ink);white-space:nowrap;opacity:0;transform:scale(.6);transition:opacity var(--dur-1) var(--ease),transform var(--dur-2) var(--ease)}
+/* над ссылкой или кнопкой: линза растёт и подкрашивается фиолетовым, точка уменьшается */
+.cursor.is-hot .cursor__lens::before{transform:scale(1.45);background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.72),rgba(142,124,255,.2) 58%,rgba(106,85,232,.16))}
+.cursor.is-hot .cursor__dot{scale:.55}
+/* над карточкой работы: большая линза с подписью «Открыть», точка прячется */
+.cursor.is-card .cursor__lens::before{transform:scale(2.3);background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.92),rgba(255,255,255,.62) 60%,rgba(236,232,255,.5))}
+.cursor.is-card .cursor__txt{opacity:1;transform:none}
+.cursor.is-card .cursor__dot{opacity:0}
+/* нажатие: линза сжимается */
+.cursor.is-down .cursor__lens::before{transform:scale(.82)}
+.cursor.is-hot.is-down .cursor__lens::before{transform:scale(1.2)}
+.cursor.is-card.is-down .cursor__lens::before{transform:scale(2)}
+/* во время перехода окна кейса курсор остаётся живым (своя группа без анимации) */
+::view-transition-group(cursor){animation:none}
+::view-transition-old(cursor){display:none}
+::view-transition-new(cursor){animation:none}
 /* смена языка: текст гаснет и проявляется */
 .i18n-fade{transition:opacity 120ms var(--ease)!important}
 .i18n-out{opacity:0!important}

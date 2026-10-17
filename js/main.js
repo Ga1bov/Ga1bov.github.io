@@ -316,30 +316,44 @@
     }, { passive: true });
   }
 
-  /* ---------- курсор-кольцо: догоняет мышь, растёт над ссылками и кнопками (системный курсор остаётся) ---------- */
-  if (fine && !reduce) {
-    const ring = document.createElement('div'); ring.className = 'cursor'; ring.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(ring);
-    let x = 0, y = 0, cx = 0, cy = 0, raf = 0, last = 0, seen = false;
+  /* ---------- свой курсор: точка — указатель (без задержки), стеклянная линза догоняет её; только мышь,
+     без reduced-motion, lite и режимов повышенного контраста (там остаётся системный курсор пользователя) ---------- */
+  let raiseCursor = () => {};
+  if (fine && !reduce && !root.classList.contains('lite') && !matchMedia('(forced-colors: active), (prefers-contrast: more)').matches) {
+    const cur = document.createElement('div'); cur.className = 'cursor'; cur.setAttribute('aria-hidden', 'true');
+    cur.innerHTML = '<span class="cursor__lens"><span class="cursor__txt" data-dyn="cur.open">' + dyn('cur.open') + '</span></span><span class="cursor__dot"></span>';
+    document.body.appendChild(cur);
+    const lens = cur.firstChild; const dot = cur.lastChild;
+    // верхний слой: popover, поднятый после открытия окна, рисуется над ним (show() зовёт raiseCursor)
+    if (typeof cur.showPopover === 'function') {
+      cur.popover = 'manual';
+      raiseCursor = () => { try { if (cur.matches(':popover-open')) cur.hidePopover(); cur.showPopover(); } catch (e) { /* не в документе */ } };
+      raiseCursor();
+    }
+    const FIELD = 'input:not([type=radio]):not([type=checkbox]),textarea,select,[contenteditable]';
+    let x = 0, y = 0, lx = 0, ly = 0, raf = 0, last = 0, on = false;
     const step = (t) => {
-      const k = 1 - Math.pow(0.7, Math.max(1, t - last) / 16.7); last = t;
-      cx += (x - cx) * k; cy += (y - cy) * k;
-      ring.style.transform = 'translate3d(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px,0)';
-      raf = Math.abs(x - cx) + Math.abs(y - cy) > 0.2 ? requestAnimationFrame(step) : 0;
+      const k = 1 - Math.pow(0.78, Math.max(1, t - last) / 16.7); last = t;
+      lx += (x - lx) * k; ly += (y - ly) * k;
+      lens.style.transform = 'translate3d(' + lx.toFixed(1) + 'px,' + ly.toFixed(1) + 'px,0)';
+      raf = Math.abs(x - lx) + Math.abs(y - ly) > 0.2 ? requestAnimationFrame(step) : 0;
     };
     addEventListener('pointermove', (e) => {
       if (e.pointerType !== 'mouse') return;
       x = e.clientX; y = e.clientY;
-      if (!seen) { seen = true; cx = x; cy = y; }
+      dot.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)';
+      if (!on) { on = true; lx = x; ly = y; cur.classList.add('is-on'); root.classList.add('has-cursor'); }
       const t = e.target.closest ? e.target : document.body;
-      ring.classList.add('is-on');
-      ring.classList.toggle('is-hot', Boolean(t.closest('a,button,summary,label')));
-      ring.classList.toggle('is-text', Boolean(t.closest('input,textarea')));
+      const field = Boolean(t.closest(FIELD));
+      cur.classList.toggle('is-text', field);
+      cur.classList.toggle('is-card', !field && Boolean(t.closest('[data-case]')));
+      cur.classList.toggle('is-hot', !field && Boolean(t.closest('a,button,summary,label')));
       if (!raf) { last = performance.now(); raf = requestAnimationFrame(step); }
     }, { passive: true });
-    addEventListener('pointerdown', () => ring.classList.add('is-down'), { passive: true });
-    addEventListener('pointerup', () => ring.classList.remove('is-down'), { passive: true });
-    root.addEventListener('mouseleave', () => ring.classList.remove('is-on'));
+    addEventListener('pointerdown', () => cur.classList.add('is-down'), { passive: true });
+    addEventListener('pointerup', () => cur.classList.remove('is-down'), { passive: true });
+    // мышь ушла из окна: свой курсор гаснет, системный возвращается; при возвращении линза не «прилетает» издалека
+    root.addEventListener('mouseleave', () => { on = false; cur.classList.remove('is-on'); root.classList.remove('has-cursor'); });
   }
 
   /* ---------- контакты и доступность из config.js ---------- */
@@ -366,7 +380,7 @@
     document.startViewTransition(update).finished.finally(done);
   };
   const cardOf = (d) => $('[data-case="' + d.id.slice(5) + '"]');
-  const show = (d) => { buildCase(d); warmCase(d.id.slice(5)); root.classList.add('ready'); d.showModal(); lock(true); $('.case__box', d).scrollTop = 0; $$('.gal', d).forEach((g) => g.upd()); };
+  const show = (d) => { buildCase(d); warmCase(d.id.slice(5)); root.classList.add('ready'); d.showModal(); raiseCursor(); lock(true); $('.case__box', d).scrollTop = 0; $$('.gal', d).forEach((g) => g.upd()); };
   function openCase(card) {
     const d = $('#case-' + card.dataset.case);
     if (!d || typeof d.showModal !== 'function') return;
